@@ -242,7 +242,7 @@
         </div>
 
         <div class="section">
-            <div class="customer-name">ABC Realty Premium</div>
+            <div class="customer-name" id="customerName">ABC Realty Premium</div>
             
             <div class="info-bar">
                 ✅ RERA Approved | ✅ Bank Loans | ✅ Possession Soon
@@ -375,8 +375,29 @@
             }
         };
 
+        // 🔥 DYNAMIC CUSTOMER NAME FROM URL PARAMETER
+        function getUrlParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        function setCustomerName() {
+            const nameParam = getUrlParameter('name');
+            const customerNameEl = document.getElementById('customerName');
+            
+            if (nameParam) {
+                // Capitalize first letter
+                const formattedName = nameParam.charAt(0).toUpperCase() + nameParam.slice(1);
+                customerNameEl.textContent = `Welcome ${formattedName}!`;
+            } else {
+                customerNameEl.textContent = 'ABC Realty Premium';
+            }
+        }
+
         // Set default date to tomorrow
         document.addEventListener('DOMContentLoaded', function() {
+            setCustomerName();
+            
             const tomorrow = new Date();
             tomorrow.setDate(tomorrow.getDate() + 1);
             document.getElementById('visitDate').value = tomorrow.toISOString().split('T')[0];
@@ -460,7 +481,9 @@
         }
 
         function submitForm() {
+            const nameParam = getUrlParameter('name');
             const fields = {
+                customerName: nameParam || 'Direct Visitor',
                 name: document.getElementById('name').value,
                 mobile: document.getElementById('mobile').value,
                 budget: document.getElementById('budget').value,
@@ -470,7 +493,8 @@
                 remarks: document.getElementById('remarks').value,
                 area: document.getElementById('areaSelect').options[document.getElementById('areaSelect').selectedIndex]?.text || '',
                 project: document.getElementById('projectSelect').value,
-                roomType: document.getElementById('roomType').value
+                roomType: document.getElementById('roomType').value,
+                url: window.location.href
             };
 
             const required = ['name', 'mobile', 'budget', 'visitDate', 'visitTime', 'comingWith'];
@@ -481,20 +505,20 @@
                 return;
             }
 
-            console.log('🎯 Site Visit Booking:', fields);
+            // Log complete lead data (perfect for webhook)
+            console.log('🎯 Site Visit Lead:', fields);
             
-            alert(`✅ Booking Confirmed ${fields.name}!\n\n` +
-                  `📅 Date: ${fields.visitDate}\n` +
-                  `🕒 Time: ${fields.visitTime}\n` +
-                  `👥 Coming: ${fields.comingWith.replace(/([A-Z])/g, ' $1').toUpperCase()}\n` +
-                  `💰 Budget: ₹${fields.budget}L\n\n` +
-                  `Our executive will confirm in 15 mins!\n📞 ${fields.mobile}`);
+            const customerMsg = nameParam ? `Welcome back ${nameParam}!` : '';
+            alert(`✅ ${customerMsg}\n\nBooking Confirmed!\n\n` +
+                  `👤 ${fields.name}\n` +
+                  `📅 ${fields.visitDate} | ${fields.visitTime}\n` +
+                  `👥 ${fields.comingWith.replace(/([A-Z])/g, ' $1').toUpperCase()}\n` +
+                  `💰 ₹${fields.budget}L\n\n` +
+                  `📞 Call coming in 15 mins!\n${fields.mobile}`);
             
             // Reset form
             document.getElementById('interestForm').classList.remove('open');
-            document.querySelectorAll('#interestForm input, #interestForm select, #interestForm textarea').forEach(el => {
-                if (el.tagName !== 'SELECT' || el.id === 'visitTime') el.value = '';
-            });
+            document.querySelectorAll('#interestForm input:not(#visitDate), #interestForm select:not(#visitTime), #interestForm textarea').forEach(el => el.value = '');
         }
     </script>
 </body>
