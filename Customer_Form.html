@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏛️ Premium Realty</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            min-height: 100vh;
+            padding: 15px;
+            color: #f1f5f9;
+        }
+
+        .container {
+            max-width: 420px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.1);
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            padding: 25px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .header p {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .section {
+            padding: 25px 20px;
+        }
+
+        .customer-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #f8fafc;
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 12px 0;
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+        }
+
+        .form-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .form-group {
+            position: relative;
+        }
+
+        label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: #cbd5e1;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            background: rgba(255,255,255,0.1);
+            color: #f1f5f9;
+            font-size: 1rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        select::placeholder, input::placeholder {
+            color: #94a3b8;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            background: rgba(255,255,255,0.15);
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+        }
+
+        select option {
+            background: #1e293b;
+            color: #f1f5f9;
+        }
+
+        .price-card {
+            background: linear-gradient(135deg, #10b981, #059669);
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+            margin: 20px 0;
+            font-weight: 700;
+            font-size: 1.3rem;
+            box-shadow: 0 10px 30px rgba(16,185,129,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .price-card.empty {
+            background: linear-gradient(135deg, #64748b, #475569);
+            font-size: 1rem;
+            color: #e2e8f0;
+        }
+
+        .media-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .media-item {
+            aspect-ratio: 1;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+        }
+
+        .media-item:hover {
+            transform: scale(1.02);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+
+        .media-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-placeholder {
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+        }
+
+        .cta-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(239,68,68,0.4);
+        }
+
+        .form-panel {
+            max-height: 0;
+            overflow: hidden;
+            background: rgba(255,255,255,0.05);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .form-panel.open {
+            max-height: 1000px;
+            padding: 25px 20px 20px;
+        }
+
+        .form-panel h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .submit-btn {
+            margin-top: 16px;
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .info-bar {
+            background: rgba(59,130,246,0.2);
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .date-time-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 10px; }
+            .container { max-width: 100%; margin: 0; border-radius: 20px; }
+            .date-time-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏛️ Premium Realty</h1>
+            <p>Book your site visit now</p>
+        </div>
+
+        <div class="section">
+            <div class="customer-name">ABC Realty Premium</div>
+            
+            <div class="info-bar">
+                ✅ RERA Approved | ✅ Bank Loans | ✅ Possession Soon
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>📍 Area</label>
+                    <select id="areaSelect" onchange="updateProjects()">
+                        <option value="">Choose Area</option>
+                        <option value="boisar">🏖️ Boisar</option>
+                        <option value="palghar">🌊 Palghar</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>🏗️ Project</label>
+                    <select id="projectSelect" onchange="calculatePrice()">
+                        <option value="">Choose Project</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>🏠 Room Type</label>
+                    <select id="roomType" onchange="calculatePrice()">
+                        <option value="">Choose Type</option>
+                        <option value="1rk">1 RK</option>
+                        <option value="1bhk">1 BHK</option>
+                        <option value="2bhk">2 BHK</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="price-card empty" id="priceDisplay">
+                Select all options to see price
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="media-grid">
+                <div class="media-item" onclick="openImage(1)">
+                    <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=300&h=300&fit=crop" alt="Living Room">
+                </div>
+                <div class="media-item" onclick="openImage(2)">
+                    <img src="https://images.unsplash.com/photo-1583608205776-bfd35f673e25?w=300&h=300&fit=crop" alt="Kitchen">
+                </div>
+                <div class="media-item" onclick="openImage(3)">
+                    <img src="https://images.unsplash.com/photo-1564078512252-cf1ab7dfd10f?w=300&h=300&fit=crop" alt="Bedroom">
+                </div>
+                <div class="media-item" onclick="toggleVideo()">
+                    <div class="video-placeholder">▶ Video</div>
+                    <video class="video-player" style="display:none; width:100%; height:100%;" controls>
+                        <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+
+            <button class="cta-btn" onclick="toggleForm()">📅 Book Site Visit</button>
+        </div>
+
+        <div class="form-panel" id="interestForm">
+            <h3>Site Visit Booking</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>👤 Name</label>
+                    <input type="text" id="name" placeholder="Full Name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>📱 Mobile</label>
+                    <input type="tel" id="mobile" placeholder="9876543210" required>
+                </div>
+
+                <div class="form-group">
+                    <label>💰 Budget (₹ Lakhs)</label>
+                    <input type="number" id="budget" placeholder="50" min="10" step="5" required>
+                </div>
+
+                <div class="date-time-row">
+                    <div class="form-group">
+                        <label>📅 Site Visit Date</label>
+                        <input type="date" id="visitDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>🕒 Preferred Time</label>
+                        <select id="visitTime" required>
+                            <option value="">Select Time</option>
+                            <option value="10AM">10:00 AM</option>
+                            <option value="11AM">11:00 AM</option>
+                            <option value="12PM">12:00 PM</option>
+                            <option value="2PM">02:00 PM</option>
+                            <option value="3PM">03:00 PM</option>
+                            <option value="4PM">04:00 PM</option>
+                            <option value="5PM">05:00 PM</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>👥 Coming With</label>
+                    <select id="comingWith" required>
+                        <option value="">Select Option</option>
+                        <option value="alone">👤 Alone</option>
+                        <option value="family">👨‍👩‍👧‍👦 With Family</option>
+                        <option value="friends">👫 With Friends</option>
+                        <option value="partner">💑 With Partner</option>
+                        <option value="broker">🏢 With Broker</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>💭 Remarks</label>
+                    <textarea id="remarks" placeholder="Any special requirements?"></textarea>
+                </div>
+            </div>
+            
+            <button class="cta-btn submit-btn" onclick="submitForm()">✅ Confirm Booking</button>
+        </div>
+    </div>
+
+    <script>
+        const prices = {
+            boisar: {
+                'xxx project': { '1rk': 35, '1bhk': 48, '2bhk': 68 },
+                'yyy project': { '1rk': 42, '1bhk': 55, '2bhk': 75 }
+            },
+            palghar: {
+                'ppp project': { '1rk': 32, '1bhk': 45, '2bhk': 62 },
+                'rrr project': { '1rk': 38, '1bhk': 50, '2bhk': 70 }
+            }
+        };
+
+        // Set default date to tomorrow
+        document.addEventListener('DOMContentLoaded', function() {
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('visitDate').value = tomorrow.toISOString().split('T')[0];
+        });
+
+        function updateProjects() {
+            const area = document.getElementById('areaSelect').value;
+            const projectSelect = document.getElementById('projectSelect');
+            
+            projectSelect.innerHTML = '<option value="">Select Project</option>';
+            
+            const projects = {
+                boisar: ['xxx project', 'yyy project'],
+                palghar: ['ppp project', 'rrr project']
+            };
+            
+            if (projects[area]) {
+                projects[area].forEach(p => {
+                    const option = document.createElement('option');
+                    option.value = p;
+                    option.textContent = p.toUpperCase().replace(' ', ' ');
+                    projectSelect.appendChild(option);
+                });
+            }
+            
+            document.getElementById('roomType').value = '';
+            updatePriceDisplay();
+        }
+
+        function calculatePrice() {
+            updatePriceDisplay();
+        }
+
+        function updatePriceDisplay() {
+            const area = document.getElementById('areaSelect').value;
+            const project = document.getElementById('projectSelect').value;
+            const roomType = document.getElementById('roomType').value;
+            const priceEl = document.getElementById('priceDisplay');
+
+            if (area && project && roomType && prices[area]?.[project]?.[roomType]) {
+                const price = prices[area][project][roomType];
+                priceEl.innerHTML = `₹<strong>${price}</strong><span style="font-size:0.8rem;display:block;margin-top:4px;">Lakhs / All Inclusive</span>`;
+                priceEl.className = 'price-card';
+            } else {
+                priceEl.innerHTML = '👆 Select <strong>all 3 options</strong>';
+                priceEl.className = 'price-card empty';
+            }
+        }
+
+        function toggleForm() {
+            const form = document.getElementById('interestForm');
+            form.classList.toggle('open');
+            if (form.classList.contains('open')) {
+                document.getElementById('name').focus();
+            }
+        }
+
+        function toggleVideo() {
+            const video = document.querySelector('.video-player');
+            const placeholder = document.querySelector('.video-placeholder');
+            
+            if (video.style.display === 'none') {
+                video.style.display = 'block';
+                placeholder.style.display = 'none';
+                video.play();
+            } else {
+                video.pause();
+                video.currentTime = 0;
+                video.style.display = 'none';
+                placeholder.style.display = 'flex';
+            }
+        }
+
+        function openImage(index) {
+            const urls = [
+                'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&fit=crop',
+                'https://images.unsplash.com/photo-1583608205776-bfd35f673e25?w=800&fit=crop',
+                'https://images.unsplash.com/photo-1564078512252-cf1ab7dfd10f?w=800&fit=crop'
+            ];
+            window.open(urls[index-1], '_blank');
+        }
+
+        function submitForm() {
+            const fields = {
+                name: document.getElementById('name').value,
+                mobile: document.getElementById('mobile').value,
+                budget: document.getElementById('budget').value,
+                visitDate: document.getElementById('visitDate').value,
+                visitTime: document.getElementById('visitTime').value,
+                comingWith: document.getElementById('comingWith').value,
+                remarks: document.getElementById('remarks').value,
+                area: document.getElementById('areaSelect').options[document.getElementById('areaSelect').selectedIndex]?.text || '',
+                project: document.getElementById('projectSelect').value,
+                roomType: document.getElementById('roomType').value
+            };
+
+            const required = ['name', 'mobile', 'budget', 'visitDate', 'visitTime', 'comingWith'];
+            const missing = required.filter(field => !fields[field]);
+            
+            if (missing.length > 0) {
+                alert('Please fill: ' + missing.map(f => f.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())).join(', '));
+                return;
+            }
+
+            console.log('🎯 Site Visit Booking:', fields);
+            
+            alert(`✅ Booking Confirmed ${fields.name}!\n\n` +
+                  `📅 Date: ${fields.visitDate}\n` +
+                  `🕒 Time: ${fields.visitTime}\n` +
+                  `👥 Coming: ${fields.comingWith.replace(/([A-Z])/g, ' $1').toUpperCase()}\n` +
+                  `💰 Budget: ₹${fields.budget}L\n\n` +
+                  `Our executive will confirm in 15 mins!\n📞 ${fields.mobile}`);
+            
+            // Reset form
+            document.getElementById('interestForm').classList.remove('open');
+            document.querySelectorAll('#interestForm input, #interestForm select, #interestForm textarea').forEach(el => {
+                if (el.tagName !== 'SELECT' || el.id === 'visitTime') el.value = '';
+            });
+        }
+    </script>
+</body>
+</html>
