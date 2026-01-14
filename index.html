@@ -242,7 +242,7 @@
         </div>
 
         <div class="section">
-            <div class="customer-name" id="customerName">ABC Realty Premium</div>
+            <div class="customer-name" id="customerName">Welcome User</div>
             
             <div class="info-bar">
                 ✅ RERA Approved | ✅ Bank Loans | ✅ Possession Soon
@@ -388,7 +388,7 @@
             if (nameParam) {
                 // Capitalize first letter
                 const formattedName = nameParam.charAt(0).toUpperCase() + nameParam.slice(1);
-                customerNameEl.textContent = `Welcome ${formattedName}!`;
+                customerNameEl.textContent = `Welcome ${formattedName}`;
             } else {
                 customerNameEl.textContent = 'ABC Realty Premium';
             }
