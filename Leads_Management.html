@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📋 Site Visits Dashboard - Premium</title>
+    <title>📋 Site Visits Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -16,113 +16,150 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #FFF8E7 0%, #FFE8CC 100%);
             min-height: 100vh;
-            padding: 15px;
-            color: #f8fafc;
+            padding: 12px;
+            color: #1e293b;
         }
 
         .container {
             max-width: 1600px;
             margin: 0 auto;
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(25px);
+            background: #ffffff;
             border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.2);
+            border: 1px solid #e5e7eb;
             overflow: hidden;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
         }
 
+        /* Header */
         .header {
             background: linear-gradient(135deg, #10b981, #059669);
-            padding: 20px 25px;
+            padding: 15px 20px;
             text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
         }
 
         .header h1 {
-            font-size: 1.6rem;
+            font-size: 1.4rem;
             font-weight: 700;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
+            color: #ffffff;
         }
 
         .header p {
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             opacity: 0.95;
+            color: #ffffff;
         }
 
+        /* Stats */
         .stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 15px;
-            padding: 20px 25px;
-            background: rgba(255,255,255,0.08);
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            padding: 15px 20px;
+            background: #FFF8E7;
+            border-bottom: 1px solid #e5e7eb;
         }
 
         .stat-card {
-            background: rgba(255,255,255,0.15);
-            padding: 15px;
-            border-radius: 15px;
+            background: #ffffff;
+            padding: 12px;
+            border-radius: 12px;
             text-align: center;
-            border: 1px solid rgba(255,255,255,0.2);
+            border: 2px solid #e5e7eb;
             transition: all 0.3s ease;
         }
 
         .stat-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border-color: #10b981;
         }
 
         .stat-number {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: 700;
             color: #10b981;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
 
         .stat-label {
-            font-size: 0.8rem;
-            color: #cbd5e1;
-            font-weight: 500;
-        }
-
-        .content {
-            padding: 25px;
-        }
-
-        .filters {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .filter-group label {
-            display: block;
             font-size: 0.75rem;
+            color: #64748b;
             font-weight: 600;
-            margin-bottom: 5px;
-            color: #e2e8f0;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        .filter-group input, .filter-group select {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid rgba(255,255,255,0.3);
-            border-radius: 10px;
-            background: rgba(255,255,255,0.12);
-            color: #f8fafc;
-            font-size: 0.9rem;
+        /* Content */
+        .content {
+            padding: 15px 20px 20px;
+            background: #FFFBF5;
         }
 
+        /* Filters */
+        .filters {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .filter-group {
+            position: relative;
+        }
+
+        .filter-group label {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding-left: 5px;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            background: #ffffff;
+            color: #1e293b;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16,185,129,0.1);
+        }
+
+        .filter-group select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23475569' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 35px;
+        }
+
+        /* Table */
         .table-wrapper {
-            max-height: 70vh;
+            max-height: calc(100vh - 350px);
+            min-height: 300px;
             overflow-y: auto;
-            background: rgba(255,255,255,0.08);
-            border-radius: 16px;
-            border: 1px solid rgba(255,255,255,0.15);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            background: #ffffff;
+            border-radius: 15px;
+            border: 2px solid #e5e7eb;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
         }
 
         .table-wrapper::-webkit-scrollbar {
@@ -130,110 +167,163 @@
         }
 
         .table-wrapper::-webkit-scrollbar-track {
-            background: rgba(255,255,255,0.1);
+            background: #f8fafc;
             border-radius: 10px;
         }
 
         .table-wrapper::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            background: linear-gradient(135deg, #10b981, #059669);
             border-radius: 10px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.88rem;
+            font-size: 0.85rem;
         }
 
         th {
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            padding: 12px 10px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            padding: 10px 8px;
             text-align: left;
             font-weight: 600;
-            font-size: 0.75rem;
-            color: #e2e8f0;
+            font-size: 0.7rem;
+            color: #ffffff;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             border-bottom: 1px solid rgba(255,255,255,0.2);
             position: sticky;
             top: 0;
             z-index: 10;
+            white-space: nowrap;
         }
 
         td {
-            padding: 12px 10px;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
+            padding: 10px 8px;
+            border-bottom: 1px solid #f1f5f9;
             vertical-align: middle;
+            color: #1e293b;
         }
 
         tr:hover {
-            background: rgba(255,255,255,0.1);
+            background: #FFF8E7;
         }
 
+        .no-data {
+            text-align: center;
+            padding: 50px 20px;
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        /* Visit Time Display */
+        .visit-time {
+            font-weight: 600;
+            color: #10b981;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        .submitted-time {
+            font-size: 0.7rem;
+            color: #64748b;
+            margin-top: 3px;
+        }
+
+        /* Status Badges */
         .status {
             padding: 4px 10px;
             border-radius: 12px;
             font-size: 0.7rem;
-            font-weight: 600;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.3px;
+            white-space: nowrap;
+            display: inline-block;
         }
 
-        .status.pending { background: rgba(251,191,36,0.3); color: #f59e0b; }
-        .status.confirmed { background: rgba(16,185,129,0.3); color: #10b981; }
-        .status.completed { background: rgba(59,130,246,0.3); color: #3b82f6; }
-        .status.cancelled { background: rgba(239,68,68,0.3); color: #ef4444; }
+        .status.pending {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fbbf24;
+        }
 
+        .status.confirmed {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+
+        .status.completed {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #3b82f6;
+        }
+
+        .status.cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+
+        /* Action Buttons */
         .action-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 5px;
         }
 
         .action-btn {
-            padding: 6px 10px;
+            padding: 6px 8px;
             border: none;
             border-radius: 8px;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 600;
             cursor: pointer;
-            margin: 0;
-            transition: all 0.2s;
+            transition: all 0.3s;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 4px;
-            flex: 1;
-            min-width: 70px;
             justify-content: center;
+            gap: 2px;
+            line-height: 1;
+            min-height: 40px;
+            color: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
         }
 
-        .btn-whatsapp { 
-            background: linear-gradient(135deg, #25D366, #128C7E); 
-            color: white;
-            font-size: 0.7rem;
+        .action-btn i {
+            font-size: 0.9rem;
         }
-        .btn-call { 
-            background: linear-gradient(135deg, #FF5722, #E64A19); 
-            color: white;
-            font-size: 0.7rem;
+
+        .btn-whatsapp {
+            background: linear-gradient(135deg, #25D366, #128C7E);
         }
-        .btn-reschedule { 
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8); 
-            color: white;
-            font-size: 0.7rem;
+
+        .btn-call {
+            background: linear-gradient(135deg, #FF5722, #E64A19);
         }
-        .btn-complete, .btn-confirmed, .btn-cancelled { 
-            background: linear-gradient(135deg, #10b981, #059669); 
-            color: white;
-            font-size: 0.7rem;
+
+        .btn-reschedule {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        }
+
+        .btn-complete,
+        .btn-confirmed,
+        .btn-cancelled {
+            background: linear-gradient(135deg, #10b981, #059669);
         }
 
         .action-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
         }
 
-        /* MODAL STYLES */
+        .action-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -242,60 +332,236 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.6);
             backdrop-filter: blur(10px);
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .modal-content {
-            background: rgba(255,255,255,0.15);
-            backdrop-filter: blur(25px);
+            background: #ffffff;
             margin: 10% auto;
-            padding: 30px;
+            padding: 25px;
             border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.3);
+            border: 2px solid #e5e7eb;
             width: 90%;
-            max-width: 500px;
+            max-width: 450px;
             position: relative;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            animation: slideDown 0.3s;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
         .close {
             position: absolute;
-            right: 20px;
-            top: 15px;
-            color: #f1f5f9;
+            right: 15px;
+            top: 10px;
+            color: #64748b;
             font-size: 28px;
             font-weight: bold;
             cursor: pointer;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s;
         }
 
         .close:hover {
+            background: #fee2e2;
             color: #ef4444;
+            transform: rotate(90deg);
         }
 
         .modal h3 {
             margin-bottom: 20px;
-            color: #f8fafc;
+            color: #1e293b;
             text-align: center;
+            font-size: 1.3rem;
         }
 
-        .visit-time {
-            font-weight: 600;
+        .modal-info {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #FFF8E7;
+            border-radius: 10px;
+            border: 2px solid #e5e7eb;
+        }
+
+        .modal-info strong {
+            font-size: 1.05rem;
             color: #10b981;
+        }
+
+        .modal-info small {
+            display: block;
+            margin-top: 5px;
+            color: #64748b;
             font-size: 0.85rem;
         }
 
-        .submitted-time {
-            font-size: 0.75rem;
-            opacity: 0.8;
-            font-family: 'Courier New', monospace;
-            color: #94a3b8;
+        .modal-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 20px;
         }
 
+        .modal-buttons button {
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .modal-btn-confirm {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            box-shadow: 0 4px 12px rgba(16,185,129,0.3);
+        }
+
+        .modal-btn-cancel {
+            background: #ffffff;
+            color: #1e293b;
+            border: 2px solid #e5e7eb;
+        }
+
+        .modal-btn-confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16,185,129,0.4);
+        }
+
+        .modal-btn-cancel:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+
+        /* Mobile Responsive */
         @media (max-width: 768px) {
-            .filters { grid-template-columns: 1fr; }
-            .stats { grid-template-columns: repeat(2, 1fr); }
-            .action-buttons { flex-direction: column; }
-            .action-btn { min-width: auto; padding: 8px 12px; }
+            body {
+                padding: 8px;
+            }
+
+            .container {
+                border-radius: 15px;
+            }
+
+            .header {
+                padding: 12px 15px;
+            }
+
+            .header h1 {
+                font-size: 1.2rem;
+            }
+
+            .header p {
+                font-size: 0.75rem;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+                padding: 12px 15px;
+            }
+
+            .stat-card {
+                padding: 10px;
+            }
+
+            .stat-number {
+                font-size: 1.4rem;
+            }
+
+            .content {
+                padding: 12px 15px 15px;
+            }
+
+            .filters {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .table-wrapper {
+                max-height: calc(100vh - 400px);
+                border-radius: 12px;
+            }
+
+            table {
+                font-size: 0.75rem;
+            }
+
+            th {
+                padding: 8px 6px;
+                font-size: 0.65rem;
+            }
+
+            td {
+                padding: 8px 6px;
+            }
+
+            .action-buttons {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .action-btn {
+                padding: 5px 6px;
+                font-size: 0.65rem;
+                min-height: 35px;
+            }
+
+            .modal-content {
+                margin: 20% auto;
+                padding: 20px;
+            }
+        }
+
+        /* Landscape mobile */
+        @media (max-width: 900px) and (orientation: landscape) {
+            .table-wrapper {
+                max-height: calc(100vh - 280px);
+            }
+        }
+
+        /* Small mobile */
+        @media (max-width: 480px) {
+            .stat-number {
+                font-size: 1.2rem;
+            }
+
+            .stat-label {
+                font-size: 0.7rem;
+            }
+
+            .visit-time {
+                font-size: 0.75rem;
+            }
+
+            .submitted-time {
+                font-size: 0.65rem;
+            }
         }
     </style>
 </head>
@@ -303,7 +569,7 @@
     <div class="container">
         <div class="header">
             <h1><i class="fas fa-calendar-check"></i> Site Visits Dashboard</h1>
-            <p>Premium Lead Management | Real-time Updates | Scrollable Table</p>
+            <p>Real-time lead management & tracking</p>
         </div>
 
         <div class="stats">
@@ -328,11 +594,11 @@
         <div class="content">
             <div class="filters">
                 <div class="filter-group">
-                    <label>🔍 Search Leads</label>
+                    <label>🔍 Search</label>
                     <input type="text" id="searchInput" placeholder="Name, Mobile, Project..." onkeyup="filterTable()">
                 </div>
                 <div class="filter-group">
-                    <label>📅 Filter Date</label>
+                    <label>📅 Date</label>
                     <input type="date" id="dateFilter" onchange="filterTable()">
                 </div>
                 <div class="filter-group">
@@ -357,10 +623,10 @@
                 <table id="leadsTable">
                     <thead>
                         <tr>
-                            <th>Visit Date & Time</th>
-                            <th>Lead Name</th>
+                            <th>Visit Info</th>
+                            <th>Name</th>
                             <th>Mobile</th>
-                            <th>Project/Area</th>
+                            <th>Project</th>
                             <th>Budget</th>
                             <th>Coming With</th>
                             <th>Status</th>
@@ -385,30 +651,23 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
             <h3><i class="fas fa-calendar-alt"></i> Reschedule Visit</h3>
-            <div style="margin-bottom: 20px;">
-                <strong id="modalLeadName"></strong><br>
+            
+            <div class="modal-info">
+                <strong id="modalLeadName"></strong>
                 <small id="modalCurrentDate"></small>
             </div>
             
-            <div style="margin-bottom: 25px;">
-                <label style="display: block; margin-bottom: 8px; color: #e2e8f0;">🕒 New Visit Date & Time</label>
-                <input type="text" id="rescheduleDatePicker" placeholder="Select date & time" style="
-                    width: 100%; padding: 12px; border: 1px solid rgba(255,255,255,0.3);
-                    border-radius: 10px; background: rgba(255,255,255,0.1); 
-                    color: #f8fafc; font-size: 1rem;">
+            <div class="filter-group">
+                <label>🕒 New Visit Date & Time</label>
+                <input type="text" id="rescheduleDatePicker" placeholder="Select date & time">
             </div>
             
-            <div style="display: flex; gap: 12px;">
-                <button onclick="confirmReschedule()" style="
-                    flex: 1; padding: 12px; background: linear-gradient(135deg, #10b981, #059669);
-                    color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer;">
-                    ✅ Confirm
+            <div class="modal-buttons">
+                <button class="modal-btn-confirm" onclick="confirmReschedule()">
+                    <i class="fas fa-check"></i> Confirm
                 </button>
-                <button onclick="closeModal()" style="
-                    flex: 1; padding: 12px; background: transparent;
-                    color: #f8fafc; border: 1px solid rgba(255,255,255,0.3); 
-                    border-radius: 10px; font-weight: 600; cursor: pointer;">
-                    ❌ Cancel
+                <button class="modal-btn-cancel" onclick="closeModal()">
+                    <i class="fas fa-times"></i> Cancel
                 </button>
             </div>
         </div>
@@ -424,7 +683,7 @@
         // Flatpickr DateTime Picker
         const datePicker = flatpickr("#rescheduleDatePicker", {
             enableTime: true,
-            dateFormat: "Y-m-d H:i",
+            dateFormat: "Y-m-d h:i K",
             time_24hr: false,
             minDate: "today",
             defaultDate: new Date(),
@@ -440,11 +699,118 @@
             'cancelled': 'Cancelled'
         };
 
+        // FIXED: Parse VisitDate_n_Time format: "1/15/2026 12:22:20" or "2026-01-15"
+        function parseVisitDateTime(visitDateTime) {
+            if (!visitDateTime || visitDateTime === '') {
+                return { date: 'Not Set', time: '', raw: '', dateObj: null };
+            }
+
+            try {
+                let dateObj;
+                let hasTime = false;
+
+                // Check if it contains time (has space and colon)
+                if (visitDateTime.includes(' ') && visitDateTime.includes(':')) {
+                    // Format: "1/15/2026 12:22:20"
+                    const [datePart, timePart] = visitDateTime.split(' ');
+                    const [month, day, year] = datePart.split('/').map(num => parseInt(num));
+                    const [hours, minutes, seconds] = timePart.split(':').map(num => parseInt(num));
+                    
+                    // Create date object manually
+                    dateObj = new Date(year, month - 1, day, hours, minutes, seconds || 0);
+                    hasTime = true;
+                } else if (visitDateTime.includes('-')) {
+                    // Format: "2026-01-15"
+                    const [year, month, day] = visitDateTime.split('-').map(num => parseInt(num));
+                    dateObj = new Date(year, month - 1, day);
+                    hasTime = false;
+                } else if (visitDateTime.includes('/')) {
+                    // Format: "1/15/2026" (no time)
+                    const [month, day, year] = visitDateTime.split('/').map(num => parseInt(num));
+                    dateObj = new Date(year, month - 1, day);
+                    hasTime = false;
+                } else {
+                    return { date: 'Invalid', time: '', raw: visitDateTime, dateObj: null };
+                }
+
+                // Check if date is valid
+                if (isNaN(dateObj.getTime())) {
+                    return { date: 'Invalid', time: '', raw: visitDateTime, dateObj: null };
+                }
+
+                // Format date
+                const formattedDate = dateObj.toLocaleDateString('en-IN', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric'
+                });
+
+                // Format time if available
+                let formattedTime = '';
+                if (hasTime) {
+                    formattedTime = dateObj.toLocaleTimeString('en-IN', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true
+                    });
+                }
+
+                return {
+                    date: formattedDate,
+                    time: formattedTime,
+                    raw: visitDateTime,
+                    dateObj: dateObj
+                };
+            } catch (e) {
+                console.error('Parse error:', e, 'Input:', visitDateTime);
+                return { date: 'Error', time: '', raw: visitDateTime, dateObj: null };
+            }
+        }
+
+        // Format timestamp for display
+        function formatTimestampDisplay(timestamp) {
+            if (!timestamp || timestamp === '') return 'N/A';
+
+            try {
+                // Handle both string and Date formats
+                let dateObj;
+                
+                if (timestamp.includes('/') && timestamp.includes(':')) {
+                    // Format: "1/15/2026 12:22:20"
+                    const [datePart, timePart] = timestamp.split(' ');
+                    const [month, day, year] = datePart.split('/').map(num => parseInt(num));
+                    const [hours, minutes, seconds] = timePart.split(':').map(num => parseInt(num));
+                    dateObj = new Date(year, month - 1, day, hours, minutes, seconds || 0);
+                } else {
+                    dateObj = new Date(timestamp);
+                }
+
+                if (isNaN(dateObj.getTime())) {
+                    return timestamp.toString();
+                }
+
+                return dateObj.toLocaleString('en-IN', {
+                    timeZone: 'Asia/Kolkata',
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true
+                });
+            } catch(e) {
+                console.error('Timestamp format error:', e);
+                return timestamp.toString();
+            }
+        }
+
         async function loadLeads() {
             try {
                 const response = await fetch(LEADS_API_URL);
                 const data = await response.json();
                 allLeads = Array.isArray(data) ? data.slice().reverse() : [];
+                
+                console.log('Loaded leads:', allLeads.length);
                 
                 populateAreaFilter();
                 updateStats();
@@ -469,55 +835,29 @@
 
         function updateStats() {
             const total = allLeads.length;
-            const today = allLeads.filter(lead => lead.VisitDate === new Date().toISOString().split('T')[0]).length;
-            const statusCounts = {};
             
+            // Count today's visits
+            const today = new Date();
+            const todayStr = today.toISOString().split('T')[0]; // "2026-01-15"
+
+            const todayCount = allLeads.filter(lead => {
+                const visitInfo = parseVisitDateTime(lead.VisitDate_n_Time);
+                if (!visitInfo.dateObj) return false;
+                
+                const visitDateStr = visitInfo.dateObj.toISOString().split('T')[0];
+                return visitDateStr === todayStr;
+            }).length;
+
+            const statusCounts = {};
             allLeads.forEach(lead => {
                 const status = lead.Status || 'pending';
                 statusCounts[status] = (statusCounts[status] || 0) + 1;
             });
 
             document.getElementById('totalLeads').textContent = total;
-            document.getElementById('todayLeads').textContent = today;
+            document.getElementById('todayLeads').textContent = todayCount;
             document.getElementById('pendingLeads').textContent = statusCounts.pending || 0;
             document.getElementById('confirmedLeads').textContent = statusCounts.confirmed || 0;
-        }
-
-        function formatVisitTimestamp(visitDate, visitTime, submittedTimestamp) {
-            const visitDateFormatted = visitDate ? new Date(visitDate).toLocaleDateString('en-IN', {
-                day: '2-digit',
-                month: 'short',
-                year: 'numeric'
-            }) : 'N/A';
-            
-            const visitTimeFormatted = visitTime || 'TBD';
-            
-            let submittedFormatted = 'N/A';
-            try {
-                if (submittedTimestamp) {
-                    submittedFormatted = new Date(submittedTimestamp).toLocaleString('en-IN', {
-                        timeZone: 'Asia/Kolkata',
-                        day: '2-digit',
-                        month: 'short',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        hour12: true
-                    });
-                }
-            } catch(e) {
-                submittedFormatted = 'Invalid';
-            }
-            
-            return `
-                <div class="visit-time">
-                    📅 ${visitDateFormatted}<br>
-                    🕒 ${visitTimeFormatted}
-                </div>
-                <div class="submitted-time">
-                    📝 Submitted: ${submittedFormatted}
-                </div>
-            `;
         }
 
         function renderTable(leads) {
@@ -531,10 +871,19 @@
             tbody.innerHTML = leads.map((lead, index) => {
                 const rowId = `row_${index}_${Date.now()}`;
                 const timestampStr = lead.Timestamp ? lead.Timestamp.toString() : '';
+                const visitInfo = parseVisitDateTime(lead.VisitDate_n_Time);
+                const submittedInfo = formatTimestampDisplay(lead.Timestamp);
                 
                 return `
                 <tr id="${rowId}">
-                    <td>${formatVisitTimestamp(lead.VisitDate, lead.VisitTime, lead.Timestamp)}</td>
+                    <td>
+                        <div class="visit-time">
+                            📅 ${visitInfo.date}${visitInfo.time ? '<br>🕒 ' + visitInfo.time : ''}
+                        </div>
+                        <div class="submitted-time">
+                            📝 ${submittedInfo}
+                        </div>
+                    </td>
                     <td><strong>${lead.Name || 'N/A'}</strong></td>
                     <td><strong>${lead.Mobile || 'N/A'}</strong></td>
                     <td>${lead.Project || lead.Area || 'N/A'}</td>
@@ -544,16 +893,20 @@
                     <td>
                         <div class="action-buttons">
                             <button class="action-btn btn-whatsapp" onclick="sendWhatsApp('${lead.Mobile || ''}', '${lead.Name || ''}')">
-                                <i class="fab fa-whatsapp"></i><br>WA
+                                <i class="fab fa-whatsapp"></i>
+                                <span>WhatsApp</span>
                             </button>
                             <button class="action-btn btn-call" onclick="makeCall('${lead.Mobile || ''}')">
-                                <i class="fas fa-phone"></i><br>Call
+                                <i class="fas fa-phone"></i>
+                                <span>Call</span>
                             </button>
-                            <button class="action-btn btn-reschedule" onclick="openRescheduleModal('${rowId}', '${timestampStr}', '${lead.Name || ''}', '${lead.VisitDate || ''}', '${lead.VisitTime || ''}')">
-                                <i class="fas fa-calendar-alt"></i><br>Resch
+                            <button class="action-btn btn-reschedule" onclick="openRescheduleModal('${rowId}', '${timestampStr}', '${lead.Name || ''}', '${visitInfo.raw || ''}')">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>Reschedule</span>
                             </button>
                             <button class="action-btn ${getStatusBtnClass(lead.Status || 'pending')}" onclick="updateStatus('${rowId}', '${getNextStatus(lead.Status || 'pending')}', '${timestampStr}')">
-                                ${getStatusBtnText(lead.Status || 'pending').slice(0,3)}
+                                <i class="fas fa-check-circle"></i>
+                                <span>${getStatusBtnText(lead.Status || 'pending')}</span>
                             </button>
                         </div>
                     </td>
@@ -585,7 +938,17 @@
                     (lead.Mobile || '').includes(search) ||
                     (lead.Project || lead.Area || '').toLowerCase().includes(search);
                 
-                const matchesDate = !dateFilter || (lead.VisitDate || '') === dateFilter;
+                let matchesDate = true;
+                if (dateFilter) {
+                    const visitInfo = parseVisitDateTime(lead.VisitDate_n_Time);
+                    if (visitInfo.dateObj) {
+                        const visitDateStr = visitInfo.dateObj.toISOString().split('T')[0];
+                        matchesDate = visitDateStr === dateFilter;
+                    } else {
+                        matchesDate = false;
+                    }
+                }
+                
                 const matchesStatus = !statusFilter || (lead.Status || 'pending') === statusFilter;
                 const matchesArea = !areaFilter || (lead.Area || '') === areaFilter;
                 
@@ -596,14 +959,22 @@
         }
 
         // MODAL FUNCTIONS
-        function openRescheduleModal(rowId, timestamp, name, currentDate, currentTime) {
+        function openRescheduleModal(rowId, timestamp, name, visitDateTime) {
             currentRowId = rowId;
             currentTimestamp = timestamp;
+            const visitInfo = parseVisitDateTime(visitDateTime);
+            
             document.getElementById('modalLeadName').textContent = name;
             document.getElementById('modalCurrentDate').innerHTML = 
-                `Current: ${formatVisitTimestamp(currentDate, currentTime, '')}`;
+                `Current: 📅 ${visitInfo.date}${visitInfo.time ? ' | 🕒 ' + visitInfo.time : ''}`;
             document.getElementById('rescheduleModal').style.display = 'block';
-            datePicker.setDate(new Date()); // Reset to today
+            
+            // Set current date in picker
+            if (visitInfo.dateObj) {
+                datePicker.setDate(visitInfo.dateObj);
+            } else {
+                datePicker.setDate(new Date());
+            }
         }
 
         function closeModal() {
@@ -612,20 +983,52 @@
             currentTimestamp = null;
         }
 
-        function confirmReschedule() {
+        async function confirmReschedule() {
             const newDateTime = document.getElementById('rescheduleDatePicker').value;
             if (!newDateTime) {
                 alert('Please select a date and time');
                 return;
             }
             
-            // Extract date part for VisitDate (YYYY-MM-DD)
-            const datePart = newDateTime.split(' ')[0];
-            updateLeadField(currentRowId, currentTimestamp, 'VisitDate', datePart);
-            closeModal();
+            // Convert from flatpickr format "2026-01-20 02:30 PM" to Google Sheets format "1/20/2026 14:30:00"
+            const parts = newDateTime.split(' ');
+            const datePart = parts[0]; // "2026-01-20"
+            const timePart = parts[1]; // "02:30"
+            const period = parts[2]; // "PM"
+            
+            // Parse date
+            const [year, month, day] = datePart.split('-');
+            const formattedDate = `${parseInt(month)}/${parseInt(day)}/${year}`;
+            
+            // Parse time
+            let [hours, minutes] = timePart.split(':').map(num => parseInt(num));
+            
+            if (period === 'PM' && hours !== 12) {
+                hours += 12;
+            } else if (period === 'AM' && hours === 12) {
+                hours = 0;
+            }
+            
+            const formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:00`;
+            const newVisitDateTime = `${formattedDate} ${formattedTime}`;
+            
+            console.log('Rescheduling to:', newVisitDateTime);
+            
+            try {
+                await updateLeadField(currentRowId, currentTimestamp, 'VisitDate_n_Time', newVisitDateTime);
+                
+                setTimeout(() => {
+                    loadLeads();
+                    alert('✅ Visit rescheduled successfully!');
+                }, 500);
+                
+                closeModal();
+            } catch(error) {
+                console.error('Reschedule error:', error);
+                alert('Error rescheduling. Please try again.');
+            }
         }
 
-        // OTHER FUNCTIONS
         function sendWhatsApp(mobile, name) {
             if (!mobile) return alert('No mobile number');
             const message = `Hi ${name}, 
@@ -663,12 +1066,14 @@ Reply YES to confirm!`;
                 });
                 
                 console.log('Update response:', response);
-                loadLeads();
-                setTimeout(() => alert(`✅ ${field} updated to "${value}"`), 500);
+                
+                if (field === 'Status') {
+                    loadLeads();
+                    setTimeout(() => alert(`✅ ${field} updated to "${value}"`), 300);
+                }
             } catch (error) {
                 console.error('Update error:', error);
-                loadLeads();
-                setTimeout(() => alert(`⚠️ ${field} updated (${value}). Refresh manually if needed.`), 500);
+                throw error;
             }
         }
 
@@ -704,7 +1109,7 @@ Reply YES to confirm!`;
             }
         }
 
-        // Auto-refresh
+        // Auto-refresh every 30 seconds
         setInterval(loadLeads, 30000);
         document.addEventListener('DOMContentLoaded', loadLeads);
     </script>
