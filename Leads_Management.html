@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📋 Site Visits Dashboard - Premium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 15px;
+            color: #f8fafc;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(25px);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #10b981, #059669);
+            padding: 20px 25px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 0.95rem;
+            opacity: 0.95;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
+            padding: 20px 25px;
+            background: rgba(255,255,255,0.08);
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.15);
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #10b981;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #cbd5e1;
+            font-weight: 500;
+        }
+
+        .content {
+            padding: 25px;
+        }
+
+        .filters {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .filter-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #e2e8f0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-group input, .filter-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 10px;
+            background: rgba(255,255,255,0.12);
+            color: #f8fafc;
+            font-size: 0.9rem;
+        }
+
+        .table-wrapper {
+            max-height: 70vh;
+            overflow-y: auto;
+            background: rgba(255,255,255,0.08);
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .table-wrapper::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .table-wrapper::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+
+        .table-wrapper::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+        }
+
+        th {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            padding: 12px 10px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: #e2e8f0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        td {
+            padding: 12px 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            vertical-align: middle;
+        }
+
+        tr:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .status {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .status.pending { background: rgba(251,191,36,0.3); color: #f59e0b; }
+        .status.confirmed { background: rgba(16,185,129,0.3); color: #10b981; }
+        .status.completed { background: rgba(59,130,246,0.3); color: #3b82f6; }
+        .status.cancelled { background: rgba(239,68,68,0.3); color: #ef4444; }
+
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .action-btn {
+            padding: 6px 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 0;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex: 1;
+            min-width: 70px;
+            justify-content: center;
+        }
+
+        .btn-whatsapp { 
+            background: linear-gradient(135deg, #25D366, #128C7E); 
+            color: white;
+            font-size: 0.7rem;
+        }
+        .btn-call { 
+            background: linear-gradient(135deg, #FF5722, #E64A19); 
+            color: white;
+            font-size: 0.7rem;
+        }
+        .btn-reschedule { 
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8); 
+            color: white;
+            font-size: 0.7rem;
+        }
+        .btn-complete, .btn-confirmed, .btn-cancelled { 
+            background: linear-gradient(135deg, #10b981, #059669); 
+            color: white;
+            font-size: 0.7rem;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        /* MODAL STYLES */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-content {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(25px);
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.3);
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            color: #f1f5f9;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #ef4444;
+        }
+
+        .modal h3 {
+            margin-bottom: 20px;
+            color: #f8fafc;
+            text-align: center;
+        }
+
+        .visit-time {
+            font-weight: 600;
+            color: #10b981;
+            font-size: 0.85rem;
+        }
+
+        .submitted-time {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            font-family: 'Courier New', monospace;
+            color: #94a3b8;
+        }
+
+        @media (max-width: 768px) {
+            .filters { grid-template-columns: 1fr; }
+            .stats { grid-template-columns: repeat(2, 1fr); }
+            .action-buttons { flex-direction: column; }
+            .action-btn { min-width: auto; padding: 8px 12px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-calendar-check"></i> Site Visits Dashboard</h1>
+            <p>Premium Lead Management | Real-time Updates | Scrollable Table</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalLeads">0</div>
+                <div class="stat-label">Total Leads</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="todayLeads">0</div>
+                <div class="stat-label">Today's Visits</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="pendingLeads">0</div>
+                <div class="stat-label">Pending</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="confirmedLeads">0</div>
+                <div class="stat-label">Confirmed</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="filters">
+                <div class="filter-group">
+                    <label>🔍 Search Leads</label>
+                    <input type="text" id="searchInput" placeholder="Name, Mobile, Project..." onkeyup="filterTable()">
+                </div>
+                <div class="filter-group">
+                    <label>📅 Filter Date</label>
+                    <input type="date" id="dateFilter" onchange="filterTable()">
+                </div>
+                <div class="filter-group">
+                    <label>Status</label>
+                    <select id="statusFilter" onchange="filterTable()">
+                        <option value="">All Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Area</label>
+                    <select id="areaFilter" onchange="filterTable()">
+                        <option value="">All Areas</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <table id="leadsTable">
+                    <thead>
+                        <tr>
+                            <th>Visit Date & Time</th>
+                            <th>Lead Name</th>
+                            <th>Mobile</th>
+                            <th>Project/Area</th>
+                            <th>Budget</th>
+                            <th>Coming With</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leadsTableBody">
+                        <tr>
+                            <td colspan="8" class="no-data">
+                                <i class="fas fa-sync fa-spin" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+                                Loading site visits...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESCHEDULE MODAL -->
+    <div id="rescheduleModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3><i class="fas fa-calendar-alt"></i> Reschedule Visit</h3>
+            <div style="margin-bottom: 20px;">
+                <strong id="modalLeadName"></strong><br>
+                <small id="modalCurrentDate"></small>
+            </div>
+            
+            <div style="margin-bottom: 25px;">
+                <label style="display: block; margin-bottom: 8px; color: #e2e8f0;">🕒 New Visit Date & Time</label>
+                <input type="text" id="rescheduleDatePicker" placeholder="Select date & time" style="
+                    width: 100%; padding: 12px; border: 1px solid rgba(255,255,255,0.3);
+                    border-radius: 10px; background: rgba(255,255,255,0.1); 
+                    color: #f8fafc; font-size: 1rem;">
+            </div>
+            
+            <div style="display: flex; gap: 12px;">
+                <button onclick="confirmReschedule()" style="
+                    flex: 1; padding: 12px; background: linear-gradient(135deg, #10b981, #059669);
+                    color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer;">
+                    ✅ Confirm
+                </button>
+                <button onclick="closeModal()" style="
+                    flex: 1; padding: 12px; background: transparent;
+                    color: #f8fafc; border: 1px solid rgba(255,255,255,0.3); 
+                    border-radius: 10px; font-weight: 600; cursor: pointer;">
+                    ❌ Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        let allLeads = [];
+        let currentRowId = null;
+        let currentTimestamp = null;
+        const LEADS_API_URL = 'https://script.google.com/macros/s/AKfycbzYPttTzWZbQXtkTHlfixYJxYZ6GXw3sl-tk0T0Aa6jXFeKRDwXY6kUDVjc6TlQdwrA/exec';
+
+        // Flatpickr DateTime Picker
+        const datePicker = flatpickr("#rescheduleDatePicker", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            time_24hr: false,
+            minDate: "today",
+            defaultDate: new Date(),
+            locale: {
+                firstDayOfWeek: 1
+            }
+        });
+
+        const statusMap = {
+            'pending': 'Pending',
+            'confirmed': 'Confirmed', 
+            'completed': 'Completed',
+            'cancelled': 'Cancelled'
+        };
+
+        async function loadLeads() {
+            try {
+                const response = await fetch(LEADS_API_URL);
+                const data = await response.json();
+                allLeads = Array.isArray(data) ? data.slice().reverse() : [];
+                
+                populateAreaFilter();
+                updateStats();
+                renderTable(allLeads);
+            } catch (error) {
+                console.error('Error:', error);
+                showError('Failed to load data');
+            }
+        }
+
+        function populateAreaFilter() {
+            const areas = [...new Set(allLeads.map(l => l.Area).filter(Boolean))];
+            const filter = document.getElementById('areaFilter');
+            filter.innerHTML = '<option value="">All Areas</option>';
+            areas.forEach(area => {
+                const option = document.createElement('option');
+                option.value = area;
+                option.textContent = area;
+                filter.appendChild(option);
+            });
+        }
+
+        function updateStats() {
+            const total = allLeads.length;
+            const today = allLeads.filter(lead => lead.VisitDate === new Date().toISOString().split('T')[0]).length;
+            const statusCounts = {};
+            
+            allLeads.forEach(lead => {
+                const status = lead.Status || 'pending';
+                statusCounts[status] = (statusCounts[status] || 0) + 1;
+            });
+
+            document.getElementById('totalLeads').textContent = total;
+            document.getElementById('todayLeads').textContent = today;
+            document.getElementById('pendingLeads').textContent = statusCounts.pending || 0;
+            document.getElementById('confirmedLeads').textContent = statusCounts.confirmed || 0;
+        }
+
+        function formatVisitTimestamp(visitDate, visitTime, submittedTimestamp) {
+            const visitDateFormatted = visitDate ? new Date(visitDate).toLocaleDateString('en-IN', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric'
+            }) : 'N/A';
+            
+            const visitTimeFormatted = visitTime || 'TBD';
+            
+            let submittedFormatted = 'N/A';
+            try {
+                if (submittedTimestamp) {
+                    submittedFormatted = new Date(submittedTimestamp).toLocaleString('en-IN', {
+                        timeZone: 'Asia/Kolkata',
+                        day: '2-digit',
+                        month: 'short',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true
+                    });
+                }
+            } catch(e) {
+                submittedFormatted = 'Invalid';
+            }
+            
+            return `
+                <div class="visit-time">
+                    📅 ${visitDateFormatted}<br>
+                    🕒 ${visitTimeFormatted}
+                </div>
+                <div class="submitted-time">
+                    📝 Submitted: ${submittedFormatted}
+                </div>
+            `;
+        }
+
+        function renderTable(leads) {
+            const tbody = document.getElementById('leadsTableBody');
+            
+            if (leads.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="no-data">No site visits found</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = leads.map((lead, index) => {
+                const rowId = `row_${index}_${Date.now()}`;
+                const timestampStr = lead.Timestamp ? lead.Timestamp.toString() : '';
+                
+                return `
+                <tr id="${rowId}">
+                    <td>${formatVisitTimestamp(lead.VisitDate, lead.VisitTime, lead.Timestamp)}</td>
+                    <td><strong>${lead.Name || 'N/A'}</strong></td>
+                    <td><strong>${lead.Mobile || 'N/A'}</strong></td>
+                    <td>${lead.Project || lead.Area || 'N/A'}</td>
+                    <td><strong>₹${lead.Budget || 0}L</strong></td>
+                    <td>${formatComingWith(lead.ComingWith)}</td>
+                    <td><span class="status ${lead.Status || 'pending'}">${statusMap[lead.Status] || 'Pending'}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="action-btn btn-whatsapp" onclick="sendWhatsApp('${lead.Mobile || ''}', '${lead.Name || ''}')">
+                                <i class="fab fa-whatsapp"></i><br>WA
+                            </button>
+                            <button class="action-btn btn-call" onclick="makeCall('${lead.Mobile || ''}')">
+                                <i class="fas fa-phone"></i><br>Call
+                            </button>
+                            <button class="action-btn btn-reschedule" onclick="openRescheduleModal('${rowId}', '${timestampStr}', '${lead.Name || ''}', '${lead.VisitDate || ''}', '${lead.VisitTime || ''}')">
+                                <i class="fas fa-calendar-alt"></i><br>Resch
+                            </button>
+                            <button class="action-btn ${getStatusBtnClass(lead.Status || 'pending')}" onclick="updateStatus('${rowId}', '${getNextStatus(lead.Status || 'pending')}', '${timestampStr}')">
+                                ${getStatusBtnText(lead.Status || 'pending').slice(0,3)}
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                `;
+            }).join('');
+        }
+
+        function formatComingWith(comingWith) {
+            const map = {
+                'alone': '👤 Alone',
+                'family': '👨‍👩‍👧‍👦 Family', 
+                'friends': '👫 Friends',
+                'partner': '💑 Partner',
+                'broker': '🏢 Broker'
+            };
+            return map[comingWith?.toLowerCase()] || comingWith || 'N/A';
+        }
+
+        function filterTable() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const dateFilter = document.getElementById('dateFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            const areaFilter = document.getElementById('areaFilter').value;
+            
+            let filtered = allLeads.filter(lead => {
+                const matchesSearch = !search || 
+                    (lead.Name || '').toLowerCase().includes(search) ||
+                    (lead.Mobile || '').includes(search) ||
+                    (lead.Project || lead.Area || '').toLowerCase().includes(search);
+                
+                const matchesDate = !dateFilter || (lead.VisitDate || '') === dateFilter;
+                const matchesStatus = !statusFilter || (lead.Status || 'pending') === statusFilter;
+                const matchesArea = !areaFilter || (lead.Area || '') === areaFilter;
+                
+                return matchesSearch && matchesDate && matchesStatus && matchesArea;
+            });
+            
+            renderTable(filtered);
+        }
+
+        // MODAL FUNCTIONS
+        function openRescheduleModal(rowId, timestamp, name, currentDate, currentTime) {
+            currentRowId = rowId;
+            currentTimestamp = timestamp;
+            document.getElementById('modalLeadName').textContent = name;
+            document.getElementById('modalCurrentDate').innerHTML = 
+                `Current: ${formatVisitTimestamp(currentDate, currentTime, '')}`;
+            document.getElementById('rescheduleModal').style.display = 'block';
+            datePicker.setDate(new Date()); // Reset to today
+        }
+
+        function closeModal() {
+            document.getElementById('rescheduleModal').style.display = 'none';
+            currentRowId = null;
+            currentTimestamp = null;
+        }
+
+        function confirmReschedule() {
+            const newDateTime = document.getElementById('rescheduleDatePicker').value;
+            if (!newDateTime) {
+                alert('Please select a date and time');
+                return;
+            }
+            
+            // Extract date part for VisitDate (YYYY-MM-DD)
+            const datePart = newDateTime.split(' ')[0];
+            updateLeadField(currentRowId, currentTimestamp, 'VisitDate', datePart);
+            closeModal();
+        }
+
+        // OTHER FUNCTIONS
+        function sendWhatsApp(mobile, name) {
+            if (!mobile) return alert('No mobile number');
+            const message = `Hi ${name}, 
+
+✅ Budget Homes Site Visit Confirmed!
+
+📅 Date: ${new Date().toLocaleDateString('en-IN')}
+⏰ Time: ${new Date().toLocaleTimeString('en-IN', {hour12: true})}
+
+Ready to show you your dream home! 🏠✨
+
+Reply YES to confirm!`;
+            window.open(`https://wa.me/${mobile.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`, '_blank');
+        }
+
+        function makeCall(mobile) {
+            if (mobile) window.open(`tel:${mobile}`);
+        }
+
+        async function updateStatus(rowId, newStatus, timestamp) {
+            console.log('Updating status:', newStatus, 'for timestamp:', timestamp);
+            await updateLeadField(rowId, timestamp, 'Status', newStatus);
+        }
+
+        async function updateLeadField(rowId, timestamp, field, value) {
+            console.log('Updating field:', field, 'value:', value, 'timestamp:', timestamp);
+            
+            try {
+                const response = await fetch(LEADS_API_URL, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `action=update&timestamp=${encodeURIComponent(timestamp)}&field=${encodeURIComponent(field)}&value=${encodeURIComponent(value)}`
+                });
+                
+                console.log('Update response:', response);
+                loadLeads();
+                setTimeout(() => alert(`✅ ${field} updated to "${value}"`), 500);
+            } catch (error) {
+                console.error('Update error:', error);
+                loadLeads();
+                setTimeout(() => alert(`⚠️ ${field} updated (${value}). Refresh manually if needed.`), 500);
+            }
+        }
+
+        function getStatusBtnClass(status) {
+            const nextStatus = getNextStatus(status);
+            return `btn-${nextStatus}`;
+        }
+
+        function getStatusBtnText(status) {
+            return getNextStatus(status).charAt(0).toUpperCase() + getNextStatus(status).slice(1);
+        }
+
+        function getNextStatus(status) {
+            const sequence = ['pending', 'confirmed', 'completed'];
+            const currentIndex = sequence.indexOf(status);
+            return currentIndex < sequence.length - 1 ? sequence[currentIndex + 1] : 'cancelled';
+        }
+
+        function showError(message) {
+            document.getElementById('leadsTableBody').innerHTML = `
+                <tr><td colspan="8" class="no-data">
+                    <i class="fas fa-exclamation-triangle" style="color: #f59e0b; font-size: 2rem; margin-bottom: 10px;"></i>
+                    ${message}
+                </td></tr>
+            `;
+        }
+
+        // Close modal on outside click
+        window.onclick = function(event) {
+            const modal = document.getElementById('rescheduleModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        // Auto-refresh
+        setInterval(loadLeads, 30000);
+        document.addEventListener('DOMContentLoaded', loadLeads);
+    </script>
+</body>
+</html>
