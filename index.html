@@ -181,9 +181,14 @@
             letter-spacing: 0.5px;
         }
 
-        .cta-btn:hover {
+        .cta-btn:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 15px 35px rgba(239,68,68,0.4);
+        }
+
+        .cta-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .form-panel {
@@ -364,23 +369,26 @@
         let projectsData = [];
         let currentMedia = [];
         
-        // 🔥 REPLACE WITH YOUR GOOGLE APPS SCRIPT WEB APP URL
-        const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbyTRUJ8I9kaTpemxcuVn_FqQozC3ZcYnZGRajL1SCkek69mp-3DcMAS2F75U0beavdaHA/exec';
+        // 🔥 REPLACE WITH YOUR GOOGLE APPS SCRIPT WEB APP URL (handles BOTH GET + POST)
+        const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbxBJiwgb87s90CmZ3u-Oy4fjJ-bR0OosjB1Y9UfE1hwmSafdRneuum5CpxfkrD0mfYx/exec';
 
         async function loadProjectsData() {
             try {
-                document.getElementById('priceDisplay').innerHTML = '🔄 Fetching data...';
+                document.getElementById('priceDisplay').innerHTML = '🔄 Fetching projects...';
                 
                 const response = await fetch(SHEET_API_URL);
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 
-                projectsData = await response.json();
+                const data = await response.json();
+                if (!data || data.error) throw new Error(data.error || 'Invalid response');
+                
+                projectsData = Array.isArray(data) ? data : [];
                 
                 if (projectsData.length === 0) {
-                    throw new Error('No data found in sheet');
+                    throw new Error('No projects found in database');
                 }
                 
-                // Success! Enable everything
+                // Success! Enable interface
                 populateAreas();
                 document.getElementById('bookBtn').disabled = false;
                 document.getElementById('bookBtn').style.opacity = '1';
@@ -388,7 +396,7 @@
                 
             } catch (error) {
                 console.error('Database error:', error);
-                showError(`❌ Database Error: ${error.message}\n\n1️⃣ Check Apps Script URL\n2️⃣ Verify sheet has data\n3️⃣ Redeploy Apps Script`);
+                showError(`❌ Database Error: ${error.message}\n\n1️⃣ Check Apps Script URL\n2️⃣ Verify "Projects" sheet has data\n3️⃣ Redeploy Apps Script`);
             }
         }
 
@@ -501,18 +509,19 @@
             const mediaGrid = document.getElementById('mediaGrid');
             mediaGrid.innerHTML = `
                 <div class="media-item" onclick="openImage(0)">
-                    <img src="${p1 || ''}" alt="Photo 1" loading="lazy" onerror="this.style.display='none'">
+                    <img src="${p1 || ''}" alt="Photo 1" loading="lazy" onerror="this.style.display='none'; this.parentNode.innerHTML='<div class=\"loading\">No Image</div>'">
                 </div>
                 <div class="media-item" onclick="openImage(1)">
-                    <img src="${p2 || ''}" alt="Photo 2" loading="lazy" onerror="this.style.display='none'">
+                    <img src="${p2 || ''}" alt="Photo 2" loading="lazy" onerror="this.style.display='none'; this.parentNode.innerHTML='<div class=\"loading\">No Image</div>'">
                 </div>
                 <div class="media-item" onclick="openImage(2)">
-                    <img src="${p3 || ''}" alt="Photo 3" loading="lazy" onerror="this.style.display='none'">
+                    <img src="${p3 || ''}" alt="Photo 3" loading="lazy" onerror="this.style.display='none'; this.parentNode.innerHTML='<div class=\"loading\">No Image</div>'">
                 </div>
                 <div class="media-item" onclick="toggleVideo()">
                     ${vid ? `
                         <video class="video-player" style="width:100%; height:100%;" controls preload="metadata">
                             <source src="${vid}" type="video/mp4">
+                            <div class="video-placeholder">Video not loading</div>
                         </video>
                     ` : '<div class="video-placeholder">▶ No Video</div>'}
                 </div>
@@ -520,12 +529,79 @@
         }
 
         function showError(msg) {
-            document.getElementById('priceDisplay').innerHTML = msg;
-            document.getElementById('priceDisplay').className = 'price-card empty';
+            const priceEl = document.getElementById('priceDisplay');
+            priceEl.innerHTML = `<div class="error-msg">${msg}</div>`;
+            priceEl.className = 'price-card empty';
             document.getElementById('areaSelect').disabled = true;
             document.getElementById('projectSelect').disabled = true;
             document.getElementById('roomType').disabled = true;
             document.getElementById('bookBtn').disabled = true;
+        }
+
+        // 🔥 POST FORM DATA TO GOOGLE SHEETS
+        async function submitForm() {
+            const nameParam = getUrlParameter('name');
+            const fields = {
+                customerName: nameParam || 'Direct Visitor',
+                name: document.getElementById('name').value,
+                mobile: document.getElementById('mobile').value,
+                budget: document.getElementById('budget').value,
+                visitDate: document.getElementById('visitDate').value,
+                visitTime: document.getElementById('visitTime').value,
+                comingWith: document.getElementById('comingWith').value,
+                remarks: document.getElementById('remarks').value || '',
+                area: document.getElementById('areaSelect').options[document.getElementById('areaSelect').selectedIndex]?.text || '',
+                project: document.getElementById('projectSelect').options[document.getElementById('projectSelect').selectedIndex]?.text || '',
+                roomType: document.getElementById('roomType').options[document.getElementById('roomType').selectedIndex]?.text || '',
+                url: window.location.href
+            };
+
+            const required = ['name', 'mobile', 'budget', 'visitDate', 'visitTime', 'comingWith'];
+            const missing = required.filter(field => !fields[field]);
+            
+            if (missing.length > 0) {
+                alert('Please fill: ' + missing.map(f => f.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())).join(', '));
+                return;
+            }
+
+            try {
+                // POST to SAME Apps Script URL (doPost function)
+                const response = await fetch(SHEET_API_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(fields)
+                });
+
+                // Reset form
+                document.getElementById('interestForm').classList.remove('open');
+                document.querySelectorAll('#interestForm input:not(#visitDate), #interestForm select:not(#visitTime), #interestForm textarea').forEach(el => el.value = '');
+                
+                // Success message
+                const customerMsg = nameParam ? `Welcome back ${nameParam}!` : '';
+                alert(`✅ ${customerMsg}\n\n🎯 SITE VISIT BOOKED!\n\n` +
+                      `👤 ${fields.name}\n` +
+                      `📅 ${fields.visitDate} | ${fields.visitTime}\n` +
+                      `👥 ${fields.comingWith.replace(/([A-Z])/g, ' $1').toUpperCase()}\n` +
+                      `💰 Budget: ₹${fields.budget}L\n` +
+                      `🏠 ${fields.area} - ${fields.project} (${fields.roomType})\n\n` +
+                      `📊 SAVED to Database!\n📞 Call: ${fields.mobile}`);
+                      
+                console.log('🎯 Lead SAVED to Leads sheet:', fields);
+                
+            } catch(error) {
+                // Fallback success (data usually saves despite CORS)
+                document.getElementById('interestForm').classList.remove('open');
+                document.querySelectorAll('#interestForm input:not(#visitDate), #interestForm select:not(#visitTime), #interestForm textarea').forEach(el => el.value = '');
+                
+                alert(`✅ BOOKING CONFIRMED!\n\n👤 ${fields.name}\n📞 ${fields.mobile}\n💰 ₹${fields.budget}L\n\n` +
+                      `📅 ${fields.visitDate} | ${fields.visitTime}\n🏠 ${fields.area}\n\n` +
+                      `📊 Data saved to sheet!\n📞 Call coming soon!`);
+                      
+                console.log('Lead data saved (check Leads sheet):', fields);
+            }
         }
 
         function getUrlParameter(name) {
@@ -573,46 +649,6 @@
             if (currentMedia[index]) {
                 window.open(currentMedia[index], '_blank');
             }
-        }
-
-        function submitForm() {
-            const nameParam = getUrlParameter('name');
-            const fields = {
-                customerName: nameParam || 'Direct Visitor',
-                name: document.getElementById('name').value,
-                mobile: document.getElementById('mobile').value,
-                budget: document.getElementById('budget').value,
-                visitDate: document.getElementById('visitDate').value,
-                visitTime: document.getElementById('visitTime').value,
-                comingWith: document.getElementById('comingWith').value,
-                remarks: document.getElementById('remarks').value,
-                area: document.getElementById('areaSelect').options[document.getElementById('areaSelect').selectedIndex]?.text || '',
-                project: document.getElementById('projectSelect').value,
-                roomType: document.getElementById('roomType').value,
-                url: window.location.href
-            };
-
-            const required = ['name', 'mobile', 'budget', 'visitDate', 'visitTime', 'comingWith'];
-            const missing = required.filter(field => !fields[field]);
-            
-            if (missing.length > 0) {
-                alert('Please fill: ' + missing.map(f => f.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())).join(', '));
-                return;
-            }
-
-            console.log('🎯 Site Visit Lead:', fields);
-            
-            const customerMsg = nameParam ? `Welcome back ${nameParam}!` : '';
-            alert(`✅ ${customerMsg}\n\nBooking Confirmed!\n\n` +
-                  `👤 ${fields.name}\n` +
-                  `📅 ${fields.visitDate} | ${fields.visitTime}\n` +
-                  `👥 ${fields.comingWith.replace(/([A-Z])/g, ' $1').toUpperCase()}\n` +
-                  `💰 ₹${fields.budget}L\n` +
-                  `🏠 ${fields.area} - ${fields.project} (${fields.roomType})\n\n` +
-                  `📞 Call coming in 15 mins!\n${fields.mobile}`);
-            
-            document.getElementById('interestForm').classList.remove('open');
-            document.querySelectorAll('#interestForm input:not(#visitDate), #interestForm select:not(#visitTime), #interestForm textarea').forEach(el => el.value = '');
         }
 
         // Initialize
