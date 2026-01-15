@@ -92,10 +92,6 @@
             transition: all 0.3s ease;
         }
 
-        select::placeholder, input::placeholder {
-            color: #94a3b8;
-        }
-
         select:focus, input:focus {
             outline: none;
             border-color: #3b82f6;
@@ -117,13 +113,21 @@
             font-weight: 700;
             font-size: 1.3rem;
             box-shadow: 0 10px 30px rgba(16,185,129,0.3);
-            transition: all 0.3s ease;
         }
 
         .price-card.empty {
             background: linear-gradient(135deg, #64748b, #475569);
             font-size: 1rem;
             color: #e2e8f0;
+        }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #94a3b8;
+            font-style: italic;
         }
 
         .media-grid {
@@ -140,7 +144,6 @@
             cursor: pointer;
             transition: all 0.3s ease;
             border: 1px solid rgba(255,255,255,0.1);
-            position: relative;
         }
 
         .media-item:hover {
@@ -227,6 +230,17 @@
             gap: 16px;
         }
 
+        .error-msg {
+            background: rgba(239,68,68,0.2);
+            border: 1px solid rgba(239,68,68,0.4);
+            color: #fecaca;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            text-align: center;
+            margin: 10px 0;
+        }
+
         @media (max-width: 480px) {
             body { padding: 10px; }
             .container { max-width: 100%; margin: 0; border-radius: 20px; }
@@ -251,56 +265,39 @@
             <div class="form-grid">
                 <div class="form-group">
                     <label>📍 Area</label>
-                    <select id="areaSelect" onchange="updateProjects()">
-                        <option value="">Choose Area</option>
-                        <option value="boisar">🏖️ Boisar</option>
-                        <option value="palghar">🌊 Palghar</option>
+                    <select id="areaSelect" onchange="handleAreaChange()" disabled>
+                        <option value="">Loading from Google Sheets...</option>
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label>🏗️ Project</label>
-                    <select id="projectSelect" onchange="calculatePrice()">
+                    <select id="projectSelect" onchange="handleProjectChange()" disabled>
                         <option value="">Choose Project</option>
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label>🏠 Room Type</label>
-                    <select id="roomType" onchange="calculatePrice()">
+                    <select id="roomType" onchange="updatePriceDisplay()" disabled>
                         <option value="">Choose Type</option>
-                        <option value="1rk">1 RK</option>
-                        <option value="1bhk">1 BHK</option>
-                        <option value="2bhk">2 BHK</option>
                     </select>
                 </div>
             </div>
 
             <div class="price-card empty" id="priceDisplay">
-                Select all options to see price
+                Connecting to database...
             </div>
         </div>
 
         <div class="section">
-            <div class="media-grid">
-                <div class="media-item" onclick="openImage(1)">
-                    <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=300&h=300&fit=crop" alt="Living Room">
-                </div>
-                <div class="media-item" onclick="openImage(2)">
-                    <img src="https://images.unsplash.com/photo-1583608205776-bfd35f673e25?w=300&h=300&fit=crop" alt="Kitchen">
-                </div>
-                <div class="media-item" onclick="openImage(3)">
-                    <img src="https://images.unsplash.com/photo-1564078512252-cf1ab7dfd10f?w=300&h=300&fit=crop" alt="Bedroom">
-                </div>
-                <div class="media-item" onclick="toggleVideo()">
-                    <div class="video-placeholder">▶ Video</div>
-                    <video class="video-player" style="display:none; width:100%; height:100%;" controls>
-                        <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
-                    </video>
-                </div>
+            <div class="media-grid" id="mediaGrid">
+                <div class="loading">Loading media from database...</div>
             </div>
 
-            <button class="cta-btn" onclick="toggleForm()">📅 Book Site Visit</button>
+            <button class="cta-btn" onclick="toggleForm()" id="bookBtn" disabled style="opacity: 0.5;">
+                🔄 Loading Database...
+            </button>
         </div>
 
         <div class="form-panel" id="interestForm">
@@ -364,18 +361,173 @@
     </div>
 
     <script>
-        const prices = {
-            boisar: {
-                'xxx project': { '1rk': 35, '1bhk': 48, '2bhk': 68 },
-                'yyy project': { '1rk': 42, '1bhk': 55, '2bhk': 75 }
-            },
-            palghar: {
-                'ppp project': { '1rk': 32, '1bhk': 45, '2bhk': 62 },
-                'rrr project': { '1rk': 38, '1bhk': 50, '2bhk': 70 }
-            }
-        };
+        let projectsData = [];
+        let currentMedia = [];
+        
+        // 🔥 REPLACE WITH YOUR GOOGLE APPS SCRIPT WEB APP URL
+        const SHEET_API_URL = 'https://script.google.com/macros/s/AKfycbyTRUJ8I9kaTpemxcuVn_FqQozC3ZcYnZGRajL1SCkek69mp-3DcMAS2F75U0beavdaHA/exec';
 
-        // 🔥 DYNAMIC CUSTOMER NAME FROM URL PARAMETER
+        async function loadProjectsData() {
+            try {
+                document.getElementById('priceDisplay').innerHTML = '🔄 Fetching data...';
+                
+                const response = await fetch(SHEET_API_URL);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                
+                projectsData = await response.json();
+                
+                if (projectsData.length === 0) {
+                    throw new Error('No data found in sheet');
+                }
+                
+                // Success! Enable everything
+                populateAreas();
+                document.getElementById('bookBtn').disabled = false;
+                document.getElementById('bookBtn').style.opacity = '1';
+                document.getElementById('bookBtn').textContent = '📅 Book Site Visit';
+                
+            } catch (error) {
+                console.error('Database error:', error);
+                showError(`❌ Database Error: ${error.message}\n\n1️⃣ Check Apps Script URL\n2️⃣ Verify sheet has data\n3️⃣ Redeploy Apps Script`);
+            }
+        }
+
+        function populateAreas() {
+            const areas = [...new Set(projectsData.map(p => p.Area).filter(Boolean))].sort();
+            const areaSelect = document.getElementById('areaSelect');
+            
+            areaSelect.disabled = false;
+            areaSelect.innerHTML = '<option value="">Choose Area</option>';
+            
+            if (areas.length === 0) {
+                areaSelect.innerHTML = '<option value="">No areas in database</option>';
+                return;
+            }
+            
+            areas.forEach(area => {
+                const option = document.createElement('option');
+                option.value = area.toLowerCase();
+                option.textContent = area;
+                areaSelect.appendChild(option);
+            });
+        }
+
+        function handleAreaChange() {
+            const area = document.getElementById('areaSelect').value;
+            const projectSelect = document.getElementById('projectSelect');
+            
+            projectSelect.disabled = !area;
+            projectSelect.innerHTML = '<option value="">Choose Project</option>';
+            document.getElementById('roomType').disabled = true;
+            document.getElementById('roomType').innerHTML = '<option value="">Choose Type</option>';
+            
+            if (!area || projectsData.length === 0) return;
+            
+            const projects = [...new Set(projectsData
+                .filter(p => p.Area && p.Area.toLowerCase() === area)
+                .map(p => p.Project_Name)
+                .filter(Boolean)
+            )].sort();
+            
+            projects.forEach(project => {
+                const option = document.createElement('option');
+                option.value = project.toLowerCase().replace(/\s+/g, '_');
+                option.textContent = project;
+                projectSelect.appendChild(option);
+            });
+        }
+
+        function handleProjectChange() {
+            const area = document.getElementById('areaSelect').value;
+            const project = document.getElementById('projectSelect').value;
+            const roomTypeSelect = document.getElementById('roomType');
+            
+            roomTypeSelect.disabled = !area || !project;
+            roomTypeSelect.innerHTML = '<option value="">Choose Type</option>';
+            
+            if (!area || !project || projectsData.length === 0) return;
+            
+            const normProject = project.replace(/_/g, ' ').toLowerCase();
+            const roomTypes = [...new Set(projectsData
+                .filter(p => p.Area && p.Area.toLowerCase() === area && 
+                           p.Project_Name && p.Project_Name.toLowerCase() === normProject)
+                .map(p => p.Room_Type)
+                .filter(Boolean)
+            )].sort();
+            
+            roomTypes.forEach(roomType => {
+                const option = document.createElement('option');
+                option.value = roomType.toLowerCase();
+                option.textContent = roomType.toUpperCase();
+                roomTypeSelect.appendChild(option);
+            });
+        }
+
+        function updatePriceDisplay() {
+            const area = document.getElementById('areaSelect').value;
+            const projectSelect = document.getElementById('projectSelect');
+            const roomType = document.getElementById('roomType').value;
+            const priceEl = document.getElementById('priceDisplay');
+
+            if (!area || !projectSelect.value || !roomType || projectsData.length === 0) {
+                priceEl.innerHTML = '👆 Select <strong>all 3 options</strong>';
+                priceEl.className = 'price-card empty';
+                document.getElementById('mediaGrid').innerHTML = '<div class="loading">Select all options first</div>';
+                return;
+            }
+
+            const normProject = projectSelect.value.replace(/_/g, ' ').toLowerCase();
+            const normRoomType = roomType.toLowerCase();
+            
+            const match = projectsData.find(p => 
+                p.Area && p.Area.toLowerCase() === area &&
+                p.Project_Name && p.Project_Name.toLowerCase() === normProject &&
+                p.Room_Type && p.Room_Type.toLowerCase() === normRoomType
+            );
+
+            if (match && match.Price) {
+                priceEl.innerHTML = `₹<strong>${match.Price}</strong><span style="font-size:0.8rem;display:block;margin-top:4px;">Lakhs / All Inclusive</span>`;
+                priceEl.className = 'price-card';
+                
+                updateMediaGrid(match.Photo_1, match.Photo_2, match.Photo_3, match.Video_1 || '');
+                currentMedia = [match.Photo_1, match.Photo_2, match.Photo_3].filter(Boolean);
+            } else {
+                priceEl.innerHTML = '⚠️ No price data found';
+                priceEl.className = 'price-card empty';
+            }
+        }
+
+        function updateMediaGrid(p1, p2, p3, vid) {
+            const mediaGrid = document.getElementById('mediaGrid');
+            mediaGrid.innerHTML = `
+                <div class="media-item" onclick="openImage(0)">
+                    <img src="${p1 || ''}" alt="Photo 1" loading="lazy" onerror="this.style.display='none'">
+                </div>
+                <div class="media-item" onclick="openImage(1)">
+                    <img src="${p2 || ''}" alt="Photo 2" loading="lazy" onerror="this.style.display='none'">
+                </div>
+                <div class="media-item" onclick="openImage(2)">
+                    <img src="${p3 || ''}" alt="Photo 3" loading="lazy" onerror="this.style.display='none'">
+                </div>
+                <div class="media-item" onclick="toggleVideo()">
+                    ${vid ? `
+                        <video class="video-player" style="width:100%; height:100%;" controls preload="metadata">
+                            <source src="${vid}" type="video/mp4">
+                        </video>
+                    ` : '<div class="video-placeholder">▶ No Video</div>'}
+                </div>
+            `;
+        }
+
+        function showError(msg) {
+            document.getElementById('priceDisplay').innerHTML = msg;
+            document.getElementById('priceDisplay').className = 'price-card empty';
+            document.getElementById('areaSelect').disabled = true;
+            document.getElementById('projectSelect').disabled = true;
+            document.getElementById('roomType').disabled = true;
+            document.getElementById('bookBtn').disabled = true;
+        }
+
         function getUrlParameter(name) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(name);
@@ -384,66 +536,11 @@
         function setCustomerName() {
             const nameParam = getUrlParameter('name');
             const customerNameEl = document.getElementById('customerName');
-            
             if (nameParam) {
-                // Capitalize first letter
                 const formattedName = nameParam.charAt(0).toUpperCase() + nameParam.slice(1);
                 customerNameEl.textContent = `Welcome ${formattedName}`;
             } else {
                 customerNameEl.textContent = 'Welcome User';
-            }
-        }
-
-        // Set default date to tomorrow
-        document.addEventListener('DOMContentLoaded', function() {
-            setCustomerName();
-            
-            const tomorrow = new Date();
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            document.getElementById('visitDate').value = tomorrow.toISOString().split('T')[0];
-        });
-
-        function updateProjects() {
-            const area = document.getElementById('areaSelect').value;
-            const projectSelect = document.getElementById('projectSelect');
-            
-            projectSelect.innerHTML = '<option value="">Select Project</option>';
-            
-            const projects = {
-                boisar: ['xxx project', 'yyy project'],
-                palghar: ['ppp project', 'rrr project']
-            };
-            
-            if (projects[area]) {
-                projects[area].forEach(p => {
-                    const option = document.createElement('option');
-                    option.value = p;
-                    option.textContent = p.toUpperCase().replace(' ', ' ');
-                    projectSelect.appendChild(option);
-                });
-            }
-            
-            document.getElementById('roomType').value = '';
-            updatePriceDisplay();
-        }
-
-        function calculatePrice() {
-            updatePriceDisplay();
-        }
-
-        function updatePriceDisplay() {
-            const area = document.getElementById('areaSelect').value;
-            const project = document.getElementById('projectSelect').value;
-            const roomType = document.getElementById('roomType').value;
-            const priceEl = document.getElementById('priceDisplay');
-
-            if (area && project && roomType && prices[area]?.[project]?.[roomType]) {
-                const price = prices[area][project][roomType];
-                priceEl.innerHTML = `₹<strong>${price}</strong><span style="font-size:0.8rem;display:block;margin-top:4px;">Lakhs / All Inclusive</span>`;
-                priceEl.className = 'price-card';
-            } else {
-                priceEl.innerHTML = '👆 Select <strong>all 3 options</strong>';
-                priceEl.className = 'price-card empty';
             }
         }
 
@@ -458,26 +555,24 @@
         function toggleVideo() {
             const video = document.querySelector('.video-player');
             const placeholder = document.querySelector('.video-placeholder');
-            
-            if (video.style.display === 'none') {
-                video.style.display = 'block';
-                placeholder.style.display = 'none';
-                video.play();
-            } else {
-                video.pause();
-                video.currentTime = 0;
-                video.style.display = 'none';
-                placeholder.style.display = 'flex';
+            if (video && placeholder) {
+                if (video.style.display === 'none' || !video.style.display) {
+                    video.style.display = 'block';
+                    placeholder.style.display = 'none';
+                    video.play().catch(() => {});
+                } else {
+                    video.pause();
+                    video.currentTime = 0;
+                    video.style.display = 'none';
+                    placeholder.style.display = 'flex';
+                }
             }
         }
 
         function openImage(index) {
-            const urls = [
-                'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&fit=crop',
-                'https://images.unsplash.com/photo-1583608205776-bfd35f673e25?w=800&fit=crop',
-                'https://images.unsplash.com/photo-1564078512252-cf1ab7dfd10f?w=800&fit=crop'
-            ];
-            window.open(urls[index-1], '_blank');
+            if (currentMedia[index]) {
+                window.open(currentMedia[index], '_blank');
+            }
         }
 
         function submitForm() {
@@ -505,7 +600,6 @@
                 return;
             }
 
-            // Log complete lead data (perfect for webhook)
             console.log('🎯 Site Visit Lead:', fields);
             
             const customerMsg = nameParam ? `Welcome back ${nameParam}!` : '';
@@ -513,13 +607,23 @@
                   `👤 ${fields.name}\n` +
                   `📅 ${fields.visitDate} | ${fields.visitTime}\n` +
                   `👥 ${fields.comingWith.replace(/([A-Z])/g, ' $1').toUpperCase()}\n` +
-                  `💰 ₹${fields.budget}L\n\n` +
+                  `💰 ₹${fields.budget}L\n` +
+                  `🏠 ${fields.area} - ${fields.project} (${fields.roomType})\n\n` +
                   `📞 Call coming in 15 mins!\n${fields.mobile}`);
             
-            // Reset form
             document.getElementById('interestForm').classList.remove('open');
             document.querySelectorAll('#interestForm input:not(#visitDate), #interestForm select:not(#visitTime), #interestForm textarea').forEach(el => el.value = '');
         }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            setCustomerName();
+            loadProjectsData();
+            
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('visitDate').value = tomorrow.toISOString().split('T')[0];
+        });
     </script>
 </body>
 </html>
