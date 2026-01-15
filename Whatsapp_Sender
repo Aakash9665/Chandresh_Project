@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📱 WhatsApp Candidate Messenger</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            min-height: 100vh; padding: 20px; color: #f8fafc;
+        }
+
+        .container {
+            max-width: 1200px; margin: 0 auto; background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(25px); border-radius: 25px; border: 1px solid rgba(255,255,255,0.3);
+            padding: 35px; box-shadow: 0 35px 70px rgba(0,0,0,0.4);
+        }
+
+        .header { text-align: center; margin-bottom: 35px; }
+        .logo { font-size: 2.8rem; font-weight: 800; margin-bottom: 15px; }
+        .subtitle { font-size: 1.3rem; opacity: 0.95; }
+
+        .project-filters {
+            background: rgba(255,255,255,0.08); border-radius: 18px; padding: 25px; margin-bottom: 30px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .filters-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px;
+        }
+        .filter-group { position: relative; }
+        .filter-group label {
+            position: absolute; top: -10px; left: 15px; background: rgba(37,211,102,0.9);
+            padding: 2px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; color: white;
+        }
+        .filter-group select {
+            width: 100%; padding: 18px 15px; border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 15px; background: rgba(255,255,255,0.15); color: #f8fafc;
+            font-size: 1rem; font-weight: 500; appearance: none; cursor: pointer;
+        }
+        .filter-group select:focus { outline: none; border-color: #25D366; box-shadow: 0 0 0 3px rgba(37,211,102,0.2); }
+
+        .candidates-section {
+            background: rgba(255,255,255,0.08); border-radius: 20px; padding: 30px;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        .section-header {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;
+            flex-wrap: wrap; gap: 15px;
+        }
+        .section-title { font-size: 1.4rem; font-weight: 700; display: flex; align-items: center; gap: 12px; }
+        .refresh-btn {
+            padding: 12px 24px; background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer;
+        }
+
+        .candidates-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px; max-height: 65vh; overflow-y: auto; padding: 10px 0;
+        }
+        .candidate-card {
+            background: rgba(255,255,255,0.15); border-radius: 16px; padding: 25px;
+            border: 1px solid rgba(255,255,255,0.25); cursor: pointer; transition: all 0.3s ease;
+            display: flex; gap: 20px; align-items: center; position: relative;
+        }
+        .candidate-card:hover {
+            transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border-color: #25D366;
+        }
+        .candidate-card.sent {
+            opacity: 0.5; background: rgba(16,185,129,0.2); border-left: 5px solid #10b981;
+        }
+        .candidate-avatar {
+            width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #25D366, #128C7E);
+            display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white;
+            flex-shrink: 0;
+        }
+        .candidate-info { flex: 1; }
+        .candidate-name { font-size: 1.3rem; font-weight: 700; margin-bottom: 8px; }
+        .candidate-details { font-size: 0.95rem; opacity: 0.9; line-height: 1.5; }
+        .whatsapp-icon {
+            position: absolute; right: 25px; top: 50%; transform: translateY(-50%);
+            width: 50px; height: 50px; background: linear-gradient(135deg, #25D366, #128C7E);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 1.2rem; transition: all 0.3s;
+        }
+        .whatsapp-icon:hover {
+            transform: translateY(-50%) scale(1.1); box-shadow: 0 10px 25px rgba(37,211,102,0.5);
+        }
+        .sent-icon {
+            position: absolute; right: 25px; top: 50%; transform: translateY(-50%);
+            width: 50px; height: 50px; background: #10b981; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; color: white; font-size: 1.2rem;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 25px 20px; margin: 10px; }
+            .filters-grid { grid-template-columns: 1fr 1fr; }
+            .candidates-grid { grid-template-columns: 1fr; }
+            .candidate-card { flex-direction: column; text-align: center; gap: 20px; }
+            .whatsapp-icon { position: static; transform: none; margin-top: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">📱 WhatsApp Messenger</div>
+            <p class="subtitle">Click ANY ROW to Send WhatsApp → Auto Delete from Sheet</p>
+        </div>
+
+        <div class="project-filters">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label>📍 Area</label>
+                    <select id="areaSelect">
+                        <option value="">Loading areas...</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>🏢 Project</label>
+                    <select id="projectSelect">
+                        <option value="">Select Area first</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>🏠 Room Type</label>
+                    <select id="roomTypeSelect">
+                        <option value="">Select Project first</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="candidates-section">
+            <div class="section-header">
+                <h3 class="section-title">
+                    <i class="fas fa-users"></i> Fresh Contacts (Click Row → WhatsApp)
+                </h3>
+                <button class="refresh-btn" onclick="loadCandidates()">
+                    <i class="fas fa-sync-alt"></i> Load Fresh 10
+                </button>
+            </div>
+            <div class="candidates-grid" id="candidatesGrid">
+                <div style="text-align:center;padding:60px;color:#94a3b8;">
+                    <i class="fas fa-search" style="font-size:3rem;margin-bottom:20px;opacity:0.5;"></i>
+                    <div style="font-size:1.2rem;">Select Area → Project → Room Type</div>
+                    <div style="font-size:0.95rem;margin-top:10px;">to load first 10 fresh contacts</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const PROJECT_API = 'https://script.google.com/macros/s/AKfycbxBJiwgb87s90CmZ3u-Oy4fjJ-bR0OosjB1Y9UfE1hwmSafdRneuum5CpxfkrD0mfYx/exec';
+        const CANDIDATES_API = 'https://script.google.com/macros/s/AKfycbx53-0j3dTkwfTeRSZ07R3bR9k9-DCsn1dDlt1RIqwCbNlPWeYqv9ik-RJVI0Kcp8xW/exec';
+        
+        let currentProjectFilters = {};
+
+        // Load project filters
+        async function loadProjectFilters() {
+            try {
+                const response = await fetch(PROJECT_API);
+                const projects = await response.json();
+                const areas = [...new Set(projects.map(p => p.Area))].sort();
+                document.getElementById('areaSelect').innerHTML = '<option value="">Select Area</option>' + 
+                    areas.map(area => `<option value="${area}">${area}</option>`).join('');
+            } catch(e) {
+                console.error('Project API error:', e);
+            }
+        }
+
+        // Area change handler
+        document.getElementById('areaSelect').addEventListener('change', async (e) => {
+            const area = e.target.value;
+            const projectSelect = document.getElementById('projectSelect');
+            const roomTypeSelect = document.getElementById('roomTypeSelect');
+            
+            projectSelect.innerHTML = area ? '<option value="">Loading...</option>' : '<option value="">Select Area first</option>';
+            roomTypeSelect.innerHTML = '<option value="">Select Project first</option>';
+            
+            if (area) {
+                try {
+                    const response = await fetch(`${PROJECT_API}?area=${encodeURIComponent(area)}`);
+                    const projects = await response.json();
+                    projectSelect.innerHTML = '<option value="">Select Project</option>' + 
+                        [...new Set(projects.map(p => p.Project_Name))].map(p => `<option value="${p}">${p}</option>`).join('');
+                } catch(e) {
+                    projectSelect.innerHTML = '<option value="">Error loading projects</option>';
+                }
+            }
+        });
+
+        // Project change handler
+        document.getElementById('projectSelect').addEventListener('change', async (e) => {
+            const project = e.target.value;
+            const roomTypeSelect = document.getElementById('roomTypeSelect');
+            const area = document.getElementById('areaSelect').value;
+            
+            roomTypeSelect.innerHTML = project ? '<option value="">Loading...</option>' : '<option value="">Select Project first</option>';
+            
+            if (project && area) {
+                try {
+                    const response = await fetch(`${PROJECT_API}?area=${encodeURIComponent(area)}&project=${encodeURIComponent(project)}`);
+                    const projectData = await response.json();
+                    const roomTypes = [...new Set(projectData.map(p => p.Room_Type))];
+                    roomTypeSelect.innerHTML = '<option value="">Select Room Type</option>' + 
+                        roomTypes.map(rt => `<option value="${rt}">${rt}</option>`).join('');
+                } catch(e) {
+                    roomTypeSelect.innerHTML = '<option value="">Error loading room types</option>';
+                }
+            }
+        });
+
+        // Load candidates
+        document.getElementById('roomTypeSelect').addEventListener('change', loadCandidates);
+        async function loadCandidates() {
+            const area = document.getElementById('areaSelect').value;
+            const project = document.getElementById('projectSelect').value;
+            const roomType = document.getElementById('roomTypeSelect').value;
+            
+            if (!area || !project || !roomType) {
+                document.getElementById('candidatesGrid').innerHTML = `
+                    <div style="text-align:center;padding:60px;color:#94a3b8;">
+                        <i class="fas fa-search" style="font-size:3rem;margin-bottom:20px;opacity:0.5;"></i>
+                        <div style="font-size:1.2rem;">Select Area → Project → Room Type</div>
+                    </div>
+                `;
+                return;
+            }
+
+            const grid = document.getElementById('candidatesGrid');
+            grid.innerHTML = '<div style="text-align:center;padding:40px;"><i class="fas fa-spinner fa-spin" style="font-size:2rem;"></i> Loading...</div>';
+
+            try {
+                const response = await fetch(CANDIDATES_API);
+                const candidates = await response.json();
+                
+                if (!candidates || candidates.length === 0) {
+                    grid.innerHTML = '<div style="text-align:center;padding:60px;color:#94a3b8;">No fresh contacts</div>';
+                    return;
+                }
+
+                grid.innerHTML = candidates.map((candidate) => {
+                    const phone = candidate.Mobile_Num?.toString().replace(/[^0-9]/g, '') || '';
+                    const message = `Hi ${candidate.Name || 'Sir'},
+
+🏠 ${project} - ${roomType}
+
+📍 ${area}
+✨ Perfect match for your requirements!
+
+Reply YES for site visit details!
+
+Budget Homes Team`;
+
+                    const avatarText = candidate.Name ? candidate.Name[0].toUpperCase() : 'C';
+                    
+                    return `
+                    <div class="candidate-card" data-phone="${phone}">
+                        <div class="candidate-avatar">${avatarText}</div>
+                        <div class="candidate-info">
+                            <div class="candidate-name">${candidate.Name || 'Candidate'}</div>
+                            <div class="candidate-details">
+                                📱 ${candidate.Mobile_Num || 'N/A'}<br>
+                                🏠 ${project} | ${roomType}<br>
+                                📍 ${area}
+                            </div>
+                        </div>
+                        ${phone ? '<i class="fas fa-whatsapp whatsapp-icon"></i>' : '<i class="fas fa-phone-slash" style="color:#94a3b8;"></i>'}
+                    </div>`;
+                }).join('');
+            } catch(e) {
+                grid.innerHTML = '<div style="text-align:center;padding:60px;color:#ef4444;">Error loading</div>';
+                console.error(e);
+            }
+        }
+
+        // CLICK HANDLER - WORKS PERFECTLY
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.candidate-card')) {
+                const card = e.target.closest('.candidate-card');
+                const phone = card.dataset.phone;
+                const area = document.getElementById('areaSelect').value;
+                const project = document.getElementById('projectSelect').value;
+                const roomType = document.getElementById('roomTypeSelect').value;
+                const name = card.querySelector('.candidate-name').textContent;
+                
+                if (phone) {
+                    const message = `Hi ${name},
+
+🏠 ${project} - ${roomType}
+
+📍 ${area}
+✨ Perfect match for your requirements!
+
+Reply YES for site visit details!
+
+Budget Homes Team`;
+                    
+                    sendWhatsApp(phone, message, card);
+                }
+            }
+        });
+
+        // DELETE + WHATSAPP FUNCTION
+        async function sendWhatsApp(phone, message, card) {
+            console.log('🔄 Deleting:', phone);
+            card.style.opacity = '0.7';
+            
+            try {
+                const response = await fetch(CANDIDATES_API, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({phone: phone})
+                });
+                
+                const result = await response.json();
+                console.log('✅ Delete result:', result);
+            } catch(error) {
+                console.error('❌ Delete error:', error);
+            }
+            
+            // Mark as sent + Open WhatsApp
+            card.classList.add('sent');
+            const icon = card.querySelector('.whatsapp-icon');
+            if (icon) icon.outerHTML = '<i class="fas fa-check-circle sent-icon"></i>';
+            card.style.pointerEvents = 'none';
+            
+            setTimeout(() => {
+                window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
+            }, 500);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProjectFilters();
+        });
+    </script>
+</body>
+</html>
