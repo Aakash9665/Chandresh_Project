@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>CWE Location Map</title>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+    #map {
+      height: 100vh;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+const data = [
+  { clusterId:"29102127", cwe:"Rajesh9 Ghag", saNo:"SA-03135965", schedule:"21-01-2026", mobile:"9820259585, 9773505780", lat:19.1110272, lng:72.84059 },
+  { clusterId:"55396239", cwe:"Chandresh Mehta", saNo:"SA-03166306", schedule:"21-01-2026", mobile:"7715867869", lat:19.1222485, lng:72.8400175 },
+  { clusterId:"53832117", cwe:"Sachin Shah", saNo:"SA-03166302", schedule:"21-01-2026", mobile:"9920320399", lat:19.0981618, lng:72.851931 },
+  { clusterId:"61092160", cwe:"Nidhi Shah", saNo:"SA-03166314", schedule:"21-01-2026", mobile:"8097304409, 8291317601", lat:19.1290122, lng:72.8581443 },
+  { clusterId:"82650820", cwe:"Ishan parekh", saNo:"SA-03173000", schedule:"21-01-2026", mobile:"9820865606", lat:19.124986, lng:72.8429043 },
+  { clusterId:"85691196", cwe:"Amit Nanavati", saNo:"SA-03173007", schedule:"22-01-2026", mobile:"9869463151, 9969661802", lat:19.1186511, lng:72.8517732 },
+  { clusterId:"22499694", cwe:"Avnish shah", saNo:"SA-03173035", schedule:"22-01-2026", mobile:"8286127678, 9987788130", lat:19.1283711, lng:72.8521777 },
+  { clusterId:"52518834", cwe:"Mitul Doshi", saNo:"SA-03173027", schedule:"22-01-2026", mobile:"9867173326", lat:19.0958036, lng:72.845086 },
+  { clusterId:"40720488", cwe:"Uday parekh", saNo:"SA-03179934", schedule:"23-01-2026", mobile:"9821194240, 9920759080", lat:19.1163838, lng:72.8523331 },
+  { clusterId:"40226363", cwe:"Tejas fadia", saNo:"SA-03162866", schedule:"27-01-2026", mobile:"9833834545", lat:19.1236661, lng:72.8532461 },
+  { clusterId:"35076527", cwe:"sahil Kothari", saNo:"SA-03162852", schedule:"27-01-2026", mobile:"9820063298", lat:19.1220191, lng:72.8506755 },
+  { clusterId:"74093916", cwe:"Priya Vayeda", saNo:"SA-03026776", schedule:"27-01-2026", mobile:"9819458472", lat:19.1229987, lng:72.8597902 },
+  { clusterId:"30959436", cwe:"Mukesh Kandhari", saNo:"SA-03091205", schedule:"27-01-2026", mobile:"9022546760, 9702046000", lat:19.1447177, lng:72.8258859 },
+  { clusterId:"91929178", cwe:"Bhupendra Dave", saNo:"SA-03093372", schedule:"27-01-2026", mobile:"9324009475", lat:19.1260083, lng:72.8518551 },
+  { clusterId:"46139264", cwe:"Paras Mehta", saNo:"SA-03166286", schedule:"27-01-2026", mobile:"9820894208, 9322258163", lat:19.1274863, lng:72.8515491 },
+  { clusterId:"52665446", cwe:"asif motiwala", saNo:"SA-03166293", schedule:"27-01-2026", mobile:"9967865454", lat:19.1367903, lng:72.8447097 },
+  { clusterId:"25859238", cwe:"Kiran Gurav", saNo:"#N/A", schedule:"#N/A", mobile:"9619812022, 9769336345", lat:19.1103379, lng:72.8493119 },
+  { clusterId:"21547480", cwe:"Dnyanesh trivedi", saNo:"#N/A", schedule:"#N/A", mobile:"9820790300", lat:19.09693, lng:72.8491452 },
+  { clusterId:"38240987", cwe:"Ashish Shah", saNo:"#N/A", schedule:"#N/A", mobile:"9869704663, 7506326352", lat:19.0960712, lng:72.8500077 }
+];
+
+// Init map
+const map = L.map("map").setView([19.118, 72.848], 13);
+
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  attribution: "© OpenStreetMap contributors"
+}).addTo(map);
+
+// Add markers
+data.forEach(d => {
+  const marker = L.circleMarker([d.lat, d.lng], {
+    radius: 7,
+    color: "#0057ff",
+    fillColor: "#0057ff",
+    fillOpacity: 0.85
+  }).addTo(map);
+
+  marker.bindPopup(`
+    <b>CWE:</b> ${d.cwe}<br>
+    <b>Cluster ID:</b> ${d.clusterId}<br>
+    <b>SA No:</b> ${d.saNo}<br>
+    <b>Schedule Start:</b> ${d.schedule}<br>
+    <b>Mobile:</b> ${d.mobile}<br><br>
+    <a href="https://www.google.com/maps/dir/?api=1&destination=${d.lat},${d.lng}" target="_blank">
+      👉 Open Directions in Google Maps
+    </a>
+  `);
+});
+</script>
+
+</body>
+</html>
