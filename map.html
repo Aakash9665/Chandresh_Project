@@ -27,22 +27,27 @@
 
 <script>
 const data = [
-  { clusterId:"29102127", cwe:"Rajesh9 Ghag", saNo:"SA-03135965", schedule:"29-01-2026", mobile:"9820259585, 9773505780", lat:19.1110272, lng:72.84059 },
-  { clusterId:"55396239", cwe:"Chandresh Mehta", saNo:"SA-03166306", schedule:"29-01-2026", mobile:"7715867869", lat:19.1222485, lng:72.8400175 },
-  { clusterId:"53832117", cwe:"Sachin Shah", saNo:"SA-03166302", schedule:"29-01-2026", mobile:"9920320399", lat:19.0981618, lng:72.851931 },
-  { clusterId:"61092160", cwe:"Nidhi Shah", saNo:"SA-03166314", schedule:"29-01-2026", mobile:"8097304409, 8291317601", lat:19.1290122, lng:72.8581443 },
-  { clusterId:"82650820", cwe:"Ishan parekh", saNo:"SA-03173000", schedule:"29-01-2026", mobile:"9820865606", lat:19.124986, lng:72.8429043 },
-  { clusterId:"52518834", cwe:"Mitul Doshi", saNo:"SA-03173027", schedule:"29-01-2026", mobile:"9867173326", lat:19.0958036, lng:72.845086 },
-  { clusterId:"74093916", cwe:"Priya Vayeda", saNo:"SA-03026776", schedule:"27-01-2026", mobile:"9819458472", lat:19.1229987, lng:72.8597902 },
-  { clusterId:"30959436", cwe:"Mukesh Kandhari", saNo:"SA-03091205", schedule:"#N/A", mobile:"9022546760, 9702046000", lat:19.1447177, lng:72.8258859 },
-  { clusterId:"52665446", cwe:"asif motiwala", saNo:"SA-03166293", schedule:"27-01-2026", mobile:"9967865454", lat:19.1367903, lng:72.8447097 },
-  { clusterId:"25859238", cwe:"Kiran Gurav", saNo:"#N/A", schedule:"#N/A", mobile:"9619812022, 9769336345", lat:19.1103379, lng:72.8493119 },
-  { clusterId:"21547480", cwe:"Dnyanesh trivedi", saNo:"#N/A", schedule:"#N/A", mobile:"9820790300", lat:19.09693, lng:72.8491452 },
-  { clusterId:"38240987", cwe:"Ashish Shah", saNo:"#N/A", schedule:"#N/A", mobile:"9869704663, 7506326352", lat:19.0960712, lng:72.8500077 }
+  { clusterId:"63598795", cwe:"Anil Raman", nc:"78", saNo:"SA-03167125", schedule:"02-02-2026", workType:"De-Installation", remark:"SHIFTED WITHIN TOWN, RM VISIT REQUIRE", mobile:"9619533050, 9222776170", lat:19.13862, lng:72.848384 },
+  { clusterId:"72669362", cwe:"Salim babu shaikh", nc:"71", saNo:"SA-03167157", schedule:"29-01-2026", workType:"De-Installation", remark:"METER CONTINUOUSLY BEEPS, RM VISIT REQUIRE", mobile:"7506847172, 9892958103", lat:19.1344681, lng:72.8307539 },
+  { clusterId:"96718747", cwe:"Raman Thakur", nc:"#N/A", saNo:"SA-03218605", schedule:"04-02-2026", workType:"Maintenance-Meter Related", remark:"TV PLUG FIXED IN CORRECT SOCKET, VS COLLECTED", mobile:"9867413560, 8877208571", lat:19.1073588, lng:72.8707757 },
+  { clusterId:"34289683", cwe:"JitendraKumar Gupta", nc:"#N/A", saNo:"SA-03218669", schedule:"04-02-2026", workType:"Maintenance-Meter Related", remark:"", mobile:"9082359649", lat:19.120523, lng:72.851928 },
+  { clusterId:"44855592", cwe:"krishna pandey", nc:"21", saNo:"SA-03208458", schedule:"16-02-2026", workType:"Maintenance-Meter Related", remark:"DTH RECHARGE ISSUE, REQUESTED FOR CALL BACK", mobile:"8451813000, 8779062163", lat:19.126277, lng:72.85861 },
+  { clusterId:"39180422", cwe:"Sharma Dipak", nc:"19", saNo:"SA-03029815", schedule:"04-02-2026", workType:"Maintenance-Meter Related", remark:"TV IS FAULTY, REQUESTED FOR CALL BACK", mobile:"9619276293, 8692988702", lat:19.144205, lng:72.852828 },
+  { clusterId:"48791992", cwe:"Rajan Shukla", nc:"#N/A", saNo:"SA-03184085", schedule:"04-02-2026", workType:"Maintenance-Meter Related", remark:"", mobile:"9870018534, 9653331592", lat:19.091271, lng:72.84717 },
+  { clusterId:"78644503", cwe:"Siddesh Suresh Dhumal", nc:"#N/A", saNo:"SA-03079477", schedule:"04-02-2026", workType:"Maintenance-Meter Related", remark:"CURRENTLY OUT OF STATION, REQUESTED FOR CALL BACK", mobile:"9356021586", lat:19.144305, lng:72.853567 },
+  { clusterId:"96729686", cwe:"Krishna pujari", nc:"#N/A", saNo:"SA-03097858", schedule:"04-02-2026", workType:"Maintenance-Meter Related", remark:"METER IS NOT GETTING BOOT UP, RM VISIT REQUIRE", mobile:"8454082493, 9773925299", lat:19.134913, lng:72.8568107 },
+  { clusterId:"58469098", cwe:"Vijay Gholam", nc:"40", saNo:"SA-03097857", schedule:"04-02-2026", workType:"Maintenance-Meter Related", remark:"", mobile:"9892528735, 9136213374", lat:19.112991, lng:72.849213 },
+  { clusterId:"36177964", cwe:"Mangesh Jadhav", nc:"#N/A", saNo:"SA-03103613", schedule:"29-01-2026", workType:"Maintenance-Meter Related", remark:"", mobile:"9167400527, 9870706311", lat:19.108741, lng:72.870445 },
+  { clusterId:"72338644", cwe:"Rohit Manjre", nc:"#N/A", saNo:"SA-03103880", schedule:"04-02-2026", workType:"Maintenance-Meter Related", remark:"METER NOT CAPTURING WATERMARK CHANNEL RM VISIT REQUIRE", mobile:"8898922693, 9702041524", lat:19.09462, lng:72.850095 },
+  { clusterId:"75744378", cwe:"Narayan Purohit", nc:"36", saNo:"SA-03107251", schedule:"04-02-2026", workType:"Maintenance-Meter Related", remark:"METER IS NOT GETTING BOOT UP, RM VISIT REQUIRE", mobile:"8108658311, 9987241136", lat:19.12818, lng:72.852789 },
+  { clusterId:"25465047", cwe:"Bhilare Vinayak", nc:"13", saNo:"SA-03107266", schedule:"04-02-2026", workType:"Maintenance-Meter Related", remark:"METER NETWORK ISSUE, RM VISIT REQUIRE", mobile:"8104984024, 8433647171", lat:19.109417, lng:72.846027 },
+  { clusterId:"20947716", cwe:"Bbaidyanath Jha", nc:"21", saNo:"SA-03163308", schedule:"04-02-2026", workType:"Maintenance-Meter Related", remark:"METER NETWORK ISSUE, RM VISIT REQUIRE", mobile:"9773661097, 9661412359", lat:19.1074107, lng:72.8710121 },
+  { clusterId:"77033916", cwe:"Ajay Subramanyam", nc:"#N/A", saNo:"SA-03113182", schedule:"29-01-2026", workType:"Maintenance-Meter Related", remark:"METER NOT CAPTURING WATERMARK CHANNEL, RM VISIT REQUIRE", mobile:"7039679091, 7304365098", lat:19.1730135, lng:72.8794744 },
+  { clusterId:"69640977", cwe:"raj bahdur singh", nc:"#N/A", saNo:"SA-03124100", schedule:"04-02-2026", workType:"Maintenance-Meter Related", remark:"REQUESTED PANELIST TO REBOOT THE METER, VS COLLECTED", mobile:"7506166920, 8291132355", lat:19.1218008, lng:72.887478 }
 ];
 
 // Initialize map
-const map = L.map("map").setView([19.115, 72.848], 13);
+const map = L.map("map").setView([19.12, 72.85], 12);
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   attribution: "© OpenStreetMap contributors"
@@ -60,12 +65,14 @@ data.forEach(d => {
   marker.bindPopup(`
     <b>CWE:</b> ${d.cwe}<br>
     <b>Cluster ID:</b> ${d.clusterId}<br>
+    <b>NC:</b> ${d.nc}<br>
     <b>SA No:</b> ${d.saNo}<br>
     <b>Schedule Start:</b> ${d.schedule}<br>
+    <b>Work Type:</b> ${d.workType}<br>
+    <b>Remark:</b> ${d.remark || "-"}<br>
     <b>Mobile:</b> ${d.mobile}<br><br>
-    <a href="https://www.google.com/maps/dir/?api=1&destination=${d.lat},${d.lng}"
-       target="_blank">
-       👉 Open Directions in Google Maps
+    <a href="https://www.google.com/maps/dir/?api=1&destination=${d.lat},${d.lng}" target="_blank">
+      👉 Open Directions in Google Maps
     </a>
   `);
 });
